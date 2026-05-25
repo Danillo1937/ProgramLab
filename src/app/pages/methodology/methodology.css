@@ -1,0 +1,278 @@
+.methodology-container {
+  position: relative;
+  width: 100%;
+  padding-top: 140px;
+  padding-bottom: 120px;
+}
+
+.methodology-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.page-title {
+  font-size: 3rem;
+  margin-bottom: 16px;
+  letter-spacing: -0.04em;
+}
+
+.page-subtitle {
+  color: var(--text-muted);
+  font-size: 1.15rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Tabs Bar */
+.tabs-wrapper {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 900px;
+  padding: 6px;
+  margin: 48px auto 60px auto;
+  border-radius: 9999px;
+  background: rgba(13, 20, 35, 0.4);
+  z-index: 20;
+}
+
+.tab-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 24px;
+  border: none;
+  border-radius: 9999px;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.tab-btn:hover {
+  color: var(--text-main);
+}
+
+.tab-btn.active {
+  color: var(--text-main);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+/* Set dynamic theme styles for active buttons */
+.tab-btn.active:nth-child(1) {
+  background: var(--secondary-gradient);
+  box-shadow: 0 4px 20px -2px var(--secondary-glow);
+}
+.tab-btn.active:nth-child(1) * {
+  color: #04060b;
+}
+
+.tab-btn.active:nth-child(2) {
+  background: var(--primary-gradient);
+  box-shadow: 0 4px 20px -2px var(--primary-glow);
+}
+.tab-btn.active:nth-child(2) * {
+  color: #04060b;
+}
+
+.tab-btn.active:nth-child(3) {
+  background: linear-gradient(135deg, #00e676 0%, #00b0ff 100%);
+  box-shadow: 0 4px 20px -2px rgba(0, 230, 118, 0.4);
+}
+.tab-btn.active:nth-child(3) * {
+  color: #04060b;
+}
+
+.tab-icon {
+  font-size: 1.1rem;
+}
+
+/* Timeline Layout */
+.timeline-content-wrapper {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.timeline-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.timeline-intro {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.timeline-intro h2 {
+  font-size: 2rem;
+  margin-bottom: 12px;
+}
+
+.timeline-intro p {
+  color: var(--text-muted);
+  font-size: 1.05rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Steps Grid */
+.timeline-steps {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+}
+
+.step-card {
+  padding: 40px;
+  border-radius: 20px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow: hidden;
+  height: 100%;
+}
+
+.step-number-glow {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-family: var(--font-title);
+  font-size: 5rem;
+  font-weight: 900;
+  opacity: 0.05;
+  color: var(--text-main);
+  pointer-events: none;
+  line-height: 1;
+}
+
+/* Custom coloring for different timelines */
+#dev-timeline .step-card:hover {
+  border-color: rgba(157, 78, 221, 0.25);
+  box-shadow: 0 10px 30px -10px var(--secondary-glow);
+}
+#dev-timeline .step-number-glow {
+  color: var(--secondary);
+}
+
+#automation-timeline .step-card:hover {
+  border-color: rgba(0, 242, 254, 0.25);
+  box-shadow: 0 10px 30px -10px var(--primary-glow);
+}
+#automation-timeline .step-number-glow {
+  color: var(--primary);
+}
+
+#bi-timeline .step-card:hover {
+  border-color: rgba(0, 230, 118, 0.25);
+  box-shadow: 0 10px 30px -10px var(--success-glow);
+}
+#bi-timeline .step-number-glow {
+  color: var(--success);
+}
+
+.step-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.step-icon {
+  font-size: 1.6rem;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.icon-purple { color: var(--secondary); }
+.icon-cyan { color: var(--primary); }
+.icon-green { color: var(--success); }
+
+.step-header h3 {
+  font-size: 1.25rem;
+  letter-spacing: -0.01em;
+}
+
+.step-desc {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.step-outputs {
+  margin-top: auto;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  padding-top: 20px;
+}
+
+.outputs-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  display: block;
+  margin-bottom: 12px;
+}
+
+.step-outputs ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.step-outputs li {
+  font-size: 0.88rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-main);
+}
+
+.step-outputs i {
+  color: var(--success);
+  font-size: 0.9rem;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Responsive CSS */
+@media (max-width: 992px) {
+  .tabs-wrapper {
+    flex-direction: column;
+    border-radius: 16px;
+    padding: 10px;
+    gap: 8px;
+  }
+  
+  .tab-btn {
+    border-radius: 10px !important;
+    width: 100%;
+    justify-content: flex-start;
+  }
+  
+  .timeline-steps {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}

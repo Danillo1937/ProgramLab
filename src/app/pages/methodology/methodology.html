@@ -1,0 +1,327 @@
+<div class="methodology-container">
+  <!-- Glowing Background Orbs -->
+  <div class="background-glows">
+    <div class="glow-orb orb-primary" style="top: 20%; right: -10%;"></div>
+    <div class="glow-orb orb-secondary" style="top: 60%; left: -15%;"></div>
+  </div>
+
+  <section class="methodology-hero container-custom">
+    <div class="section-header text-center">
+      <span class="badge"><i class="fa-solid fa-code-fork"></i> Nosso Processo</span>
+      <h1 class="page-title">Como Moldamos Projetos</h1>
+      <p class="page-subtitle">Metodologias maduras, transparência máxima e engenharia focada em resultados reais.</p>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="tabs-wrapper glass-panel">
+      <button 
+        type="button" 
+        class="tab-btn" 
+        [class.active]="activeTab() === 'dev'" 
+        (click)="selectTab('dev')"
+      >
+        <i class="fa-solid fa-code tab-icon"></i>
+        <span>Desenvolvimento Web & Softwares</span>
+      </button>
+      <button 
+        type="button" 
+        class="tab-btn" 
+        [class.active]="activeTab() === 'automation'" 
+        (click)="selectTab('automation')"
+      >
+        <i class="fa-solid fa-robot tab-icon"></i>
+        <span>Automação de Processos (RPA)</span>
+      </button>
+      <button 
+        type="button" 
+        class="tab-btn" 
+        [class.active]="activeTab() === 'bi'" 
+        (click)="selectTab('bi')"
+      >
+        <i class="fa-solid fa-chart-pie tab-icon"></i>
+        <span>Business Intelligence (BI)</span>
+      </button>
+    </div>
+
+    <!-- Dynamic Timelines Content -->
+    <div class="timeline-content-wrapper">
+      
+      <!-- DEVELOPER TIMELINE -->
+      @if (activeTab() === 'dev') {
+        <div class="timeline-pane animate-fade-in" id="dev-timeline">
+          <div class="timeline-intro">
+            <h2>Processo de Engenharia de Software</h2>
+            <p>Criamos sistemas escaláveis unindo agilidade de entrega, padrões de projeto modernos e segurança rígida.</p>
+          </div>
+
+          <div class="timeline-steps">
+            <!-- Step 1 -->
+            <div class="step-card glass-panel">
+              <div class="step-number-glow">01</div>
+              <div class="step-header">
+                <i class="fa-solid fa-compass step-icon icon-purple"></i>
+                <h3>Imersão & Design de Interfaces (UI/UX)</h3>
+              </div>
+              <p class="step-desc">
+                Entendemos profundamente os objetivos comerciais do seu negócio. Mapeamos as jornadas do usuário e criamos layouts navegáveis e responsivos no Figma.
+              </p>
+              <div class="step-outputs">
+                <span class="outputs-title">Entregáveis da Fase:</span>
+                <ul>
+                  <li><i class="fa-solid fa-check"></i> Protótipos de alta fidelidade</li>
+                  <li><i class="fa-solid fa-check"></i> Definição da jornada do usuário</li>
+                  <li><i class="fa-solid fa-check"></i> Aprovação de design visual</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="step-card glass-panel">
+              <div class="step-number-glow">02</div>
+              <div class="step-header">
+                <i class="fa-solid fa-cubes step-icon icon-purple"></i>
+                <h3>Modelagem de Arquitetura & APIs</h3>
+              </div>
+              <p class="step-desc">
+                Estruturamos as bases técnicas do projeto. Modelamos bancos de dados de alta performance e desenhamos a arquitetura de microsserviços e integrações de API.
+              </p>
+              <div class="step-outputs">
+                <span class="outputs-title">Entregáveis da Fase:</span>
+                <ul>
+                  <li><i class="fa-solid fa-check"></i> Diagrama do Banco de Dados</li>
+                  <li><i class="fa-solid fa-check"></i> Documentação Swagger da API</li>
+                  <li><i class="fa-solid fa-check"></i> Escolha de infraestrutura cloud</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="step-card glass-panel">
+              <div class="step-number-glow">03</div>
+              <div class="step-header">
+                <i class="fa-solid fa-keyboard step-icon icon-purple"></i>
+                <h3>Desenvolvimento Ágil & Integração Contínua</h3>
+              </div>
+              <p class="step-desc">
+                A engenharia de fato. Codificação limpa do Frontend (ex: Angular) e Backend. Commits frequentes no Git com testes automatizados e deploys contínuos em ambientes de teste.
+              </p>
+              <div class="step-outputs">
+                <span class="outputs-title">Entregáveis da Fase:</span>
+                <ul>
+                  <li><i class="fa-solid fa-check"></i> Repositório Git com código limpo</li>
+                  <li><i class="fa-solid fa-check"></i> Deploy contínuo em ambiente de staging</li>
+                  <li><i class="fa-solid fa-check"></i> Relatórios de Sprints semanais</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="step-card glass-panel">
+              <div class="step-number-glow">04</div>
+              <div class="step-header">
+                <i class="fa-solid fa-rocket step-icon icon-purple"></i>
+                <h3>Deploy de Produção & Monitoramento</h3>
+              </div>
+              <p class="step-desc">
+                Lançamento oficial. Executamos testes de estresse, segurança contra injeções, auditoria de SEO (Google) e velocidade. Monitoramos logs ativamente após a entrega.
+              </p>
+              <div class="step-outputs">
+                <span class="outputs-title">Entregáveis da Fase:</span>
+                <ul>
+                  <li><i class="fa-solid fa-check"></i> Aplicação no ar em ambiente produtivo</li>
+                  <li><i class="fa-solid fa-check"></i> Certificado SSL e Otimização SEO</li>
+                  <li><i class="fa-solid fa-check"></i> Manual do usuário e suporte técnico</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- AUTOMATION TIMELINE -->
+      @if (activeTab() === 'automation') {
+        <div class="timeline-pane animate-fade-in" id="automation-timeline">
+          <div class="timeline-intro">
+            <h2>Metodologia de Automações Inteligentes</h2>
+            <p>Removemos processos manuais lentos conectando sistemas e programando robôs que operam sem interrupções.</p>
+          </div>
+
+          <div class="timeline-steps">
+            <!-- Step 1 -->
+            <div class="step-card glass-panel">
+              <div class="step-number-glow">01</div>
+              <div class="step-header">
+                <i class="fa-solid fa-search-dollar step-icon icon-cyan"></i>
+                <h3>Mapeamento de Processo & Desperdício</h3>
+              </div>
+              <p class="step-desc">
+                Auditamos as rotinas do seu time. Identificamos ações repetitivas (ex: copiar dados de planilhas, disparar emails manuais) e modelamos o fluxo ideal automatizado.
+              </p>
+              <div class="step-outputs">
+                <span class="outputs-title">Entregáveis da Fase:</span>
+                <ul>
+                  <li><i class="fa-solid fa-check"></i> Fluxograma de Processo Atual (As-Is)</li>
+                  <li><i class="fa-solid fa-check"></i> Desenho Técnico do Robô (To-Be)</li>
+                  <li><i class="fa-solid fa-check"></i> Análise de ROI (Tempo economizado)</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="step-card glass-panel">
+              <div class="step-number-glow">02</div>
+              <div class="step-header">
+                <i class="fa-solid fa-network-wired step-icon icon-cyan"></i>
+                <h3>Conexão de APIs & Criação dos Scripts</h3>
+              </div>
+              <p class="step-desc">
+                Conectamos suas ferramentas de trabalho (CRM, WhatsApp, ERP, Planilhas) via APIs ou web scrapers inteligentes. Usamos n8n, Node.js ou Make conforme o cenário.
+              </p>
+              <div class="step-outputs">
+                <span class="outputs-title">Entregáveis da Fase:</span>
+                <ul>
+                  <li><i class="fa-solid fa-check"></i> Scripts e webhooks ativos</li>
+                  <li><i class="fa-solid fa-check"></i> Configuração de chaves de API seguras</li>
+                  <li><i class="fa-solid fa-check"></i> Integrações de bancos de dados</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="step-card glass-panel">
+              <div class="step-number-glow">03</div>
+              <div class="step-header">
+                <i class="fa-solid fa-shield-halved step-icon icon-cyan"></i>
+                <h3>Tratamento de Exceções & Tolerância a Falhas</h3>
+              </div>
+              <p class="step-desc">
+                Crucial para automações estáveis. Programamos rotinas de contingência: se uma API externa falhar, o robô tenta novamente, altera a rota e notifica o time sem parar.
+              </p>
+              <div class="step-outputs">
+                <span class="outputs-title">Entregáveis da Fase:</span>
+                <ul>
+                  <li><i class="fa-solid fa-check"></i> Scripts defensivos com Auto-Retry</li>
+                  <li><i class="fa-solid fa-check"></i> Sistema de logs detalhado</li>
+                  <li><i class="fa-solid fa-check"></i> Alertas ativos via Slack/Telegram</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="step-card glass-panel">
+              <div class="step-number-glow">04</div>
+              <div class="step-header">
+                <i class="fa-solid fa-gauge-high step-icon icon-cyan"></i>
+                <h3>Homologação & Ativação de Monitoramento</h3>
+              </div>
+              <p class="step-desc">
+                Testes reais de estresse em produção. Validamos a precisão dos dados transmitidos e ativamos o robô em servidores cloud, fornecendo painel simples de visualização das execuções.
+              </p>
+              <div class="step-outputs">
+                <span class="outputs-title">Entregáveis da Fase:</span>
+                <ul>
+                  <li><i class="fa-solid fa-check"></i> Robô operando 24 horas por dia</li>
+                  <li><i class="fa-solid fa-check"></i> Dashboard de execuções ativas</li>
+                  <li><i class="fa-solid fa-check"></i> Garantia de operação estável</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- BI TIMELINE -->
+      @if (activeTab() === 'bi') {
+        <div class="timeline-pane animate-fade-in" id="bi-timeline">
+          <div class="timeline-intro">
+            <h2>Framework de Business Intelligence (BI)</h2>
+            <p>Transformamos dados brutos dispersos em inteligência comercial acessível e rápida para apoiar decisões estratégicas.</p>
+          </div>
+
+          <div class="timeline-steps">
+            <!-- Step 1 -->
+            <div class="step-card glass-panel">
+              <div class="step-number-glow">01</div>
+              <div class="step-header">
+                <i class="fa-solid fa-database step-icon icon-green"></i>
+                <h3>Mapeamento & Extração de Fontes (Ingestion)</h3>
+              </div>
+              <p class="step-desc">
+                Identificamos onde estão seus dados (Google Analytics, ERPs, planilhas financeiras, SQL, Facebook Ads). Desenvolvemos conectores seguros de extração.
+              </p>
+              <div class="step-outputs">
+                <span class="outputs-title">Entregáveis da Fase:</span>
+                <ul>
+                  <li><i class="fa-solid fa-check"></i> Mapeamento de origens de dados</li>
+                  <li><i class="fa-solid fa-check"></i> Conexões seguras de credenciais</li>
+                  <li><i class="fa-solid fa-check"></i> Fluxo de ingestão automatizado</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="step-card glass-panel">
+              <div class="step-number-glow">02</div>
+              <div class="step-header">
+                <i class="fa-solid fa-filter-circle-dollar step-icon icon-green"></i>
+                <h3>Engenharia de ETL & Data Warehouse</h3>
+              </div>
+              <p class="step-desc">
+                A etapa invisível mais importante. Executamos rotinas de ETL (Extração, Transformação e Carga): limpamos dados duplicados, unificamos moedas/datas e gravamos no Data Warehouse.
+              </p>
+              <div class="step-outputs">
+                <span class="outputs-title">Entregáveis da Fase:</span>
+                <ul>
+                  <li><i class="fa-solid fa-check"></i> Pipeline de ETL automatizado</li>
+                  <li><i class="fa-solid fa-check"></i> Banco de dados analítico modelado</li>
+                  <li><i class="fa-solid fa-check"></i> Dados higienizados prontos para análise</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="step-card glass-panel">
+              <div class="step-number-glow">03</div>
+              <div class="step-header">
+                <i class="fa-solid fa-calculator step-icon icon-green"></i>
+                <h3>Modelagem de KPIs & Métricas de Negócio</h3>
+              </div>
+              <p class="step-desc">
+                Calculamos as métricas vitais para a sua diretoria (LTV, CAC, Margem de Contribuição, Churn Rate). Criamos regras de negócio consistentes e seguras.
+              </p>
+              <div class="step-outputs">
+                <span class="outputs-title">Entregáveis da Fase:</span>
+                <ul>
+                  <li><i class="fa-solid fa-check"></i> Dicionário de métricas e KPIs</li>
+                  <li><i class="fa-solid fa-check"></i> Fórmulas de cálculo otimizadas (ex: DAX, SQL)</li>
+                  <li><i class="fa-solid fa-check"></i> Cruzamento inteligente de dados</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="step-card glass-panel">
+              <div class="step-number-glow">04</div>
+              <div class="step-header">
+                <i class="fa-solid fa-chart-line step-icon icon-green"></i>
+                <h3>Dashboards Decisivos & Treinamento</h3>
+              </div>
+              <p class="step-desc">
+                Materialização visual. Desenhamos painéis interativos (Power BI ou Looker Studio) com filtros intuitivos e visuais de fácil digestão, seguido por treinamento prático das equipes.
+              </p>
+              <div class="step-outputs">
+                <span class="outputs-title">Entregáveis da Fase:</span>
+                <ul>
+                  <li><i class="fa-solid fa-check"></i> Dashboards interativos e responsivos</li>
+                  <li><i class="fa-solid fa-check"></i> Acesso automático atualizado em tempo real</li>
+                  <li><i class="fa-solid fa-check"></i> Treinamento corporativo de uso dos dados</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+    </div>
+  </section>
+</div>
