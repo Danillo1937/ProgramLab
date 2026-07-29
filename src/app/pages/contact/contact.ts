@@ -18,20 +18,42 @@ export class ContactComponent {
   // UI Signals
   protected readonly isSubmitting = signal<boolean>(false);
   protected readonly submitSuccess = signal<boolean>(false);
+  protected readonly submitError = signal<string>('');
 
-  protected onSubmit(event: Event): void {
+  protected async onSubmit(event: Event): Promise<void> {
     event.preventDefault();
-    
-    // Basic Form validation
+
+    // Basic form validation
     if (!this.name() || !this.email() || !this.message()) {
       return;
     }
 
     this.isSubmitting.set(true);
+    this.submitError.set('');
 
-    // Simulate API request
-    setTimeout(() => {
-      this.isSubmitting.set(false);
+    try {
+      const payload = {
+        name: this.name(),
+        email: this.email(),
+        website: this.website(),
+        service: this.service(),
+        message: this.message(),
+      };
+
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.error || 'Falha ao enviar a mensagem. Tente novamente mais tarde.');
+      }
+
       this.submitSuccess.set(true);
 
       // Reset form fields
@@ -40,10 +62,16 @@ export class ContactComponent {
       this.website.set('');
       this.service.set('web');
       this.message.set('');
-    }, 1500);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Falha ao enviar a mensagem. Tente novamente mais tarde.';
+      this.submitError.set(message);
+    } finally {
+      this.isSubmitting.set(false);
+    }
   }
 
   protected resetSuccess(): void {
     this.submitSuccess.set(false);
+    this.submitError.set('');
   }
 }

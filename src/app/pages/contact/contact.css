@@ -249,6 +249,13 @@
   line-height: 1.6;
 }
 
+.form-error {
+  margin-top: 1rem;
+  color: #ff6b6b;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
 /* Responsive CSS */
 @media (max-width: 992px) {
   .contact-grid {

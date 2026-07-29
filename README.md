@@ -36,6 +36,20 @@ ng build
 
 This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
 
+### Web3Forms integration
+
+This application submits the contact form through a server endpoint using the Web3Forms API. Set the `WEB3FORMS_ACCESS_KEY` environment variable before running the SSR server so form submissions can be delivered via email.
+
+Example:
+
+```bash
+set WEB3FORMS_ACCESS_KEY=your_access_key_here
+npm run build -- --configuration development
+npm run serve:ssr:ProgramLab
+```
+
+Note: `ng serve` runs the frontend development server only and does not expose the backend contact endpoint used for Web3Forms submissions.
+
 ## Running unit tests
 
 To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:

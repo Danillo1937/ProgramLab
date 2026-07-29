@@ -172,6 +172,10 @@
                 <span>Enviar Solicitação</span>
               }
             </button>
+
+            @if (submitError()) {
+              <p class="form-error">{{ submitError() }}</p>
+            }
           </form>
         }
       </div>

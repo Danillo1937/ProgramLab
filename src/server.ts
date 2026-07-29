@@ -24,6 +24,59 @@ const angularApp = new AngularNodeAppEngine();
  * ```
  */
 
+app.post('/api/contact', express.json(), async (req, res) => {
+  const accessKey = process.env['WEB3FORMS_ACCESS_KEY'];
+
+  if (!accessKey) {
+    return res.status(500).json({ success: false, error: 'Chave de acesso ao Web3Forms não configurada.' });
+  }
+
+  const { name, email, website, service, message } = req.body as {
+    name?: string;
+    email?: string;
+    website?: string;
+    service?: string;
+    message?: string;
+  };
+
+  if (!name || !email || !message) {
+    return res.status(400).json({ success: false, error: 'Nome, e-mail e mensagem são obrigatórios.' });
+  }
+
+  const formattedMessage = `Nome: ${name}\nE-mail: ${email}\nSite: ${website || 'Não informado'}\nServiço: ${service || 'Não informado'}\n\nMensagem:\n${message}`;
+
+  try {
+    const response = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        access_key: accessKey,
+        subject: 'Nova mensagem do formulário de contato ProgramLab',
+        name,
+        email,
+        message: formattedMessage,
+        website,
+        service,
+        botcheck: '',
+      }),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || result.success !== true) {
+      const errorMessage = result.error || 'Falha ao enviar a mensagem para o Web3Forms.';
+      return res.status(502).json({ success: false, error: errorMessage });
+    }
+
+    return res.status(200).json({ success: true });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Erro interno ao processar a solicitação.';
+    return res.status(500).json({ success: false, error: message });
+  }
+});
+
 /**
  * Serve static files from /browser
  */
