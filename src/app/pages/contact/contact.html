@@ -9,7 +9,7 @@
     <div class="contact-grid">
       <!-- Contact Info Sidebar -->
       <div class="contact-info-panel">
-        <span class="badge"><i class="fa-solid fa-satellite-dish"></i> Conecte-se Conosco</span>
+        <span class="badge">Conecte-se Conosco</span>
         <h1 class="contact-title">Pronto para Elevarmos seu Negócio?</h1>
         <p class="contact-desc">
           Seja para criar um sistema do zero, automatizar sua operação ou extrair inteligência de dados, nosso time de engenheiros está pronto para ajudar.
@@ -23,7 +23,7 @@
             </div>
             <div>
               <h4>E-mail Corporativo</h4>
-              <p>contato&#64;programlab.com.br</p>
+              <p>programlabcontato&#64;gmail.com</p>
             </div>
           </div>
 
@@ -34,7 +34,7 @@
             </div>
             <div>
               <h4>Telefone & WhatsApp</h4>
-              <p>+55 (11) 99999-8888</p>
+              <p>+55 (16) 99377-2510</p>
             </div>
           </div>
 
@@ -67,25 +67,16 @@
             </div>
           </div>
         } @else {
-          <form (submit)="onSubmit($event)" class="proposal-form">
+          <form (submit)="onSubmit($event)" class="proposal-form" action="https://api.web3forms.com/submit" method="POST">
             <h3 class="form-title">Solicite uma Proposta Técnica</h3>
             <p class="form-subtitle">Preencha os campos abaixo e detalhe sua necessidade.</p>
-
+            <input type="hidden" name="access_key" value="8a9332c3-adc0-4ee0-a321-e7662e3c9415">
             <!-- Name field -->
             <div class="form-group">
               <label for="name" class="form-label">Nome Completo</label>
               <div class="input-wrapper">
                 <i class="fa-solid fa-user input-icon"></i>
-                <input 
-                  type="text" 
-                  id="name" 
-                  name="name" 
-                  required
-                  placeholder="Seu nome ou da sua empresa" 
-                  class="form-input"
-                  [value]="name()"
-                  (input)="name.set($any($event.target).value)"
-                >
+                <input type="text" id="name" name="name" requiredplaceholder="Seu nome ou da sua empresa" class="form-input"[value]="name()" (input)="name.set($any($event.target).value)">
               </div>
             </div>
 
@@ -168,7 +159,6 @@
                 <i class="fa-solid fa-circle-notch fa-spin"></i>
                 <span>Enviando dados...</span>
               } @else {
-                <i class="fa-solid fa-paper-plane"></i>
                 <span>Enviar Solicitação</span>
               }
             </button>

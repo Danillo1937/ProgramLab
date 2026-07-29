@@ -21,26 +21,45 @@ export class ContactComponent {
 
   protected onSubmit(event: Event): void {
     event.preventDefault();
-    
+
+    const form = event.target as HTMLFormElement | null;
+
     // Basic Form validation
-    if (!this.name() || !this.email() || !this.message()) {
+    if (!form || !this.name() || !this.email() || !this.message()) {
       return;
     }
 
     this.isSubmitting.set(true);
 
-    // Simulate API request
-    setTimeout(() => {
-      this.isSubmitting.set(false);
-      this.submitSuccess.set(true);
+    const formData = new FormData(form);
 
-      // Reset form fields
-      this.name.set('');
-      this.email.set('');
-      this.website.set('');
-      this.service.set('web');
-      this.message.set('');
-    }, 1500);
+    fetch(form.action, {
+      method: form.method || 'POST',
+      body: formData
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error('Falha ao enviar o formulário');
+        }
+
+        return response.json().catch(() => ({}));
+      })
+      .then(() => {
+        this.submitSuccess.set(true);
+
+        // Reset form fields
+        this.name.set('');
+        this.email.set('');
+        this.website.set('');
+        this.service.set('web');
+        this.message.set('');
+      })
+      .catch(() => {
+        this.submitSuccess.set(false);
+      })
+      .finally(() => {
+        this.isSubmitting.set(false);
+      });
   }
 
   protected resetSuccess(): void {
