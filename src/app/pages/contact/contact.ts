@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
 export class ContactComponent {
   // Form Signals
   protected readonly name = signal<string>('');
+  protected readonly phone = signal<string>('');
   protected readonly email = signal<string>('');
   protected readonly website = signal<string>('');
   protected readonly service = signal<string>('web');
@@ -49,6 +50,7 @@ export class ContactComponent {
 
         // Reset form fields
         this.name.set('');
+        this.phone.set('');
         this.email.set('');
         this.website.set('');
         this.service.set('web');
