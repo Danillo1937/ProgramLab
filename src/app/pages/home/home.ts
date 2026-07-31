@@ -21,9 +21,9 @@ export class HomeComponent {
   protected readonly urgency = signal<string>('standard'); // standard, fast
 
   protected readonly serviceOptions: ServiceOption[] = [
-    { id: 'web', name: 'Web Dev & Software', price: 2500, icon: 'fa-code' },
-    { id: 'automation', name: 'Automação RPA', price: 800, icon: 'fa-robot' },
-    { id: 'bi', name: 'Business Intelligence', price: 1000, icon: 'fa-chart-pie' }
+    { id: 'web', name: 'Web Dev & Software', price: 1300, icon: 'fa-code' },
+    { id: 'automation', name: 'Automação RPA', price: 400, icon: 'fa-robot' },
+    { id: 'bi', name: 'Business Intelligence', price: 300, icon: 'fa-chart-pie' }
   ];
 
   // Computed Estimate
