@@ -21,8 +21,8 @@ export class HomeComponent {
   protected readonly urgency = signal<string>('standard'); // standard, fast
 
   protected readonly serviceOptions: ServiceOption[] = [
-    { id: 'web', name: 'Web Dev & Software', price: 1300, icon: 'fa-code' },
-    { id: 'automation', name: 'Automação RPA', price: 400, icon: 'fa-robot' },
+    { id: 'web', name: 'Web Dev & Software', price: 1500, icon: 'fa-code' },
+    { id: 'automation', name: 'Automação RPA', price: 500, icon: 'fa-robot' },
     { id: 'bi', name: 'Business Intelligence', price: 300, icon: 'fa-chart-pie' }
   ];
 
@@ -45,7 +45,7 @@ export class HomeComponent {
       multiplier = 0.7;
       daysBase = 14;
     } else if (this.complexity() === 'large') {
-      multiplier = 1.6;
+      multiplier = 2;
       daysBase = 60;
     }
 
