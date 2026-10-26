@@ -26,6 +26,7 @@
   /* Font Families */
   --font-title: 'Plus Jakarta Sans', sans-serif;
   --font-body: 'Space Grotesk', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
 
   /* Transitions */
   --transition-smooth: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
@@ -46,6 +47,39 @@ body {
   background-color: var(--bg-main);
   overflow-x: hidden;
   line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--primary);
+  color: #04060b;
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Grão de filme sutil sobre todo o site (textura editorial) */
+body::after {
+  content: '';
+  position: fixed;
+  inset: -50%;
+  z-index: 999;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  animation: grain 1s steps(6) infinite;
+}
+
+@keyframes grain {
+  0%, 100% { transform: translate(0, 0); }
+  20% { transform: translate(-3%, 2%); }
+  40% { transform: translate(2%, -3%); }
+  60% { transform: translate(-2%, -1%); }
+  80% { transform: translate(3%, 3%); }
 }
 
 /* Custom Scrollbar */
@@ -76,18 +110,81 @@ p {
 
 /* Glassmorphism Styles */
 .glass-panel {
-  background: var(--bg-card);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background:
+    linear-gradient(140deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.005) 45%),
+    var(--bg-card);
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
   border: 1px solid var(--border-glass);
   border-radius: 16px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
   transition: var(--transition-smooth);
 }
 
 .glass-panel:hover {
   border-color: var(--border-glass-hover);
-  box-shadow: 0 10px 30px -10px var(--primary-glow);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 10px 30px -10px var(--primary-glow);
   transform: translateY(-2px);
+}
+
+/* Cantoneiras técnicas que acendem no hover (cards de serviço) */
+.corners {
+  position: relative;
+}
+
+.corners::before,
+.corners::after {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid var(--card-tone, var(--primary));
+  opacity: 0;
+  transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.corners::before {
+  top: 10px;
+  left: 10px;
+  border-right: 0;
+  border-bottom: 0;
+  border-top-left-radius: 6px;
+  transform: translate(6px, 6px);
+}
+
+.corners::after {
+  right: 10px;
+  bottom: 10px;
+  border-left: 0;
+  border-top: 0;
+  border-bottom-right-radius: 6px;
+  transform: translate(-6px, -6px);
+}
+
+.corners:hover::before,
+.corners:hover::after {
+  opacity: 0.8;
+  transform: translate(0, 0);
+}
+
+/* Revelação ao rolar (aplicada pela diretiva appReveal só no navegador) */
+.reveal {
+  transition:
+    opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1) var(--reveal-delay, 0ms),
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) var(--reveal-delay, 0ms),
+    filter 0.9s cubic-bezier(0.16, 1, 0.3, 1) var(--reveal-delay, 0ms) !important;
+}
+
+.reveal:not(.is-in) {
+  opacity: 0;
+  transform: translateY(40px);
+  filter: blur(10px);
+}
+
+/* Números que contam: largura fixa por dígito evita "tremer" o layout */
+.count-up {
+  font-variant-numeric: tabular-nums;
 }
 
 /* Gradient Text */
@@ -170,6 +267,7 @@ p {
   cursor: pointer;
   transition: var(--transition-smooth);
   box-shadow: 0 4px 20px -2px var(--primary-glow);
+  text-decoration: none;
 }
 
 .btn-primary * {
@@ -191,6 +289,7 @@ p {
   border: 1px solid var(--border-glass-hover);
   background: rgba(255, 255, 255, 0.02);
   color: var(--text-main);
+  text-decoration: none;
   font-weight: 500;
   font-size: 0.95rem;
   cursor: pointer;
@@ -252,4 +351,26 @@ p {
   overflow: hidden;
   pointer-events: none;
   z-index: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+  }
+
+  body::after {
+    animation: none;
+  }
+
+  .animate-float,
+  .animate-float-delayed {
+    animation: none;
+  }
+
+  .reveal:not(.is-in) {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
 }

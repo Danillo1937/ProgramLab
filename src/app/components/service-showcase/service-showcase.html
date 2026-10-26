@@ -1,0 +1,649 @@
+<div
+  class="sc-overlay"
+  [class.is-closing]="closing()"
+  [style.--ox]="origin().x + '%'"
+  [style.--oy]="origin().y + '%'"
+  (click)="close()"
+>
+  <div
+    #panel
+    class="sc-panel"
+    [attr.data-tone]="meta().tone"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="sc-title"
+    aria-describedby="sc-summary"
+    (click)="$event.stopPropagation()"
+  >
+    <!-- Cabeçalho -->
+    <header class="sc-head">
+      <nav class="sc-tabs" aria-label="Exemplos">
+        @for (m of metas; track m.kind) {
+          <button
+            type="button"
+            class="sc-tab"
+            [attr.data-tone]="m.tone"
+            [class.active]="m.kind === kind()"
+            [attr.aria-current]="m.kind === kind() ? 'true' : null"
+            (click)="select(m.kind)"
+          >
+            <i class="fa-solid" [class]="m.icon" aria-hidden="true"></i>
+            <span>{{ m.tab }}</span>
+          </button>
+        }
+      </nav>
+      <button
+        #closeBtn
+        type="button"
+        class="sc-close"
+        (click)="close()"
+        aria-label="Fechar exemplo"
+      >
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+    </header>
+
+    <div class="sc-body" #body [appReplay]="runId()" [replayInitial]="true">
+      <!-- Introdução -->
+      <div class="sc-intro">
+        <div>
+          <span class="sc-client">{{ meta().client }}</span>
+          <h2 id="sc-title" class="sc-title">{{ meta().title }}</h2>
+          <p id="sc-summary" class="sc-summary">{{ meta().summary }}</p>
+        </div>
+        <span class="sc-disclaimer">
+          <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+          Exemplo ilustrativo com dados fictícios
+        </span>
+      </div>
+
+      @switch (kind()) {
+        <!-- ═══════════════════════════ SITES & SOFTWARES ═══════════════════════════ -->
+        @case ('web') {
+          <div class="web-grid">
+            <section class="web-stage" aria-label="Pré-visualização do portal">
+              <div class="device-switch" role="radiogroup" aria-label="Dispositivo">
+                @for (
+                  d of [
+                    { id: 'desktop', icon: 'fa-desktop', label: 'Desktop' },
+                    { id: 'tablet', icon: 'fa-tablet-screen-button', label: 'Tablet' },
+                    { id: 'mobile', icon: 'fa-mobile-screen-button', label: 'Celular' },
+                  ];
+                  track d.id
+                ) {
+                  <button
+                    type="button"
+                    role="radio"
+                    [attr.aria-checked]="device() === d.id"
+                    [class.active]="device() === d.id"
+                    (click)="device.set($any(d.id))"
+                  >
+                    <i class="fa-solid" [class]="d.icon" aria-hidden="true"></i>
+                    <span>{{ d.label }}</span>
+                  </button>
+                }
+              </div>
+
+              <div class="browser" [attr.data-device]="device()">
+                <div class="browser-bar">
+                  <span class="b-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                  <span class="b-url"
+                    ><i class="fa-solid fa-lock" aria-hidden="true"></i>
+                    pedidos.norteatacado.com.br</span
+                  >
+                </div>
+                <div class="app" [class.is-built]="built()">
+                  <aside class="app-side" aria-hidden="true">
+                    <span class="app-logo">NA</span>
+                    @for (
+                      ic of ['fa-gauge', 'fa-box', 'fa-truck', 'fa-users', 'fa-gear'];
+                      track ic;
+                      let i = $index
+                    ) {
+                      <i class="fa-solid" [class]="ic" [class.on]="i === 1"></i>
+                    }
+                  </aside>
+                  <div class="app-main">
+                    <div class="app-top">
+                      <div>
+                        <span class="app-crumb">Painel › Pedidos</span>
+                        <h3 class="app-h">Pedidos de hoje</h3>
+                      </div>
+                      <span class="app-btn"
+                        ><i class="fa-solid fa-plus" aria-hidden="true"></i> Novo pedido</span
+                      >
+                    </div>
+
+                    <div class="app-kpis">
+                      <div class="app-kpi">
+                        <span>Pedidos</span>
+                        <b>
+                          @if (built()) {
+                            <span [appCountUp]="1284" [duration]="1600"></span>
+                          } @else {
+                            <i class="sk"></i>
+                          }
+                        </b>
+                      </div>
+                      <div class="app-kpi">
+                        <span>Faturamento</span>
+                        <b>
+                          @if (built()) {
+                            <span
+                              [appCountUp]="186420"
+                              format="brl"
+                              [duration]="1900"
+                              [delay]="120"
+                            ></span>
+                          } @else {
+                            <i class="sk"></i>
+                          }
+                        </b>
+                      </div>
+                      <div class="app-kpi">
+                        <span>Entregas no prazo</span>
+                        <b>
+                          @if (built()) {
+                            <span
+                              [appCountUp]="97.4"
+                              [decimals]="1"
+                              suffix="%"
+                              [duration]="2100"
+                              [delay]="240"
+                            ></span>
+                          } @else {
+                            <i class="sk"></i>
+                          }
+                        </b>
+                      </div>
+                    </div>
+
+                    <div class="app-table" role="table" aria-label="Últimos pedidos">
+                      <div class="app-tr app-th" role="row">
+                        <span role="columnheader">Pedido</span>
+                        <span role="columnheader">Cliente</span>
+                        <span role="columnheader">Valor</span>
+                        <span role="columnheader">Status</span>
+                      </div>
+                      @for (o of orders; track o.id; let i = $index) {
+                        <div class="app-tr" role="row" [style.--i]="i">
+                          @if (built()) {
+                            <span role="cell" class="mono">{{ o.id }}</span>
+                            <span role="cell">{{ o.client }}</span>
+                            <span role="cell" class="mono">{{ o.value }}</span>
+                            <span role="cell"
+                              ><em class="chip" [attr.data-tone]="o.tone">{{ o.status }}</em></span
+                            >
+                          } @else {
+                            <i class="sk"></i><i class="sk"></i><i class="sk"></i><i class="sk"></i>
+                          }
+                        </div>
+                      }
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <aside class="web-side">
+              <div class="sc-card">
+                <h4 class="sc-card-h">Qualidade medida na entrega</h4>
+                <div class="rings">
+                  @for (s of scores; track s.label; let i = $index) {
+                    <div class="ring">
+                      <svg viewBox="0 0 64 64" aria-hidden="true">
+                        <circle class="ring-bg" cx="32" cy="32" r="27" pathLength="100" />
+                        <circle
+                          class="ring-fg"
+                          cx="32"
+                          cy="32"
+                          r="27"
+                          pathLength="100"
+                          [style.stroke-dashoffset]="ringsOn() ? 100 - s.value : 100"
+                          [style.transition-delay.ms]="i * 140"
+                        />
+                      </svg>
+                      <b [appCountUp]="s.value" [duration]="1700" [delay]="i * 140"></b>
+                      <span>{{ s.label }}</span>
+                    </div>
+                  }
+                </div>
+                <dl class="vitals">
+                  <div>
+                    <dt>Carregamento (LCP)</dt>
+                    <dd><span [appCountUp]="1.1" [decimals]="1" suffix=" s"></span></dd>
+                  </div>
+                  <div>
+                    <dt>Resposta ao clique (INP)</dt>
+                    <dd><span [appCountUp]="64" suffix=" ms"></span></dd>
+                  </div>
+                  <div>
+                    <dt>Estabilidade (CLS)</dt>
+                    <dd><span [appCountUp]="0.01" [decimals]="2"></span></dd>
+                  </div>
+                </dl>
+              </div>
+
+              <div class="sc-card">
+                <h4 class="sc-card-h">Esteira de deploy</h4>
+                <ol class="pipeline">
+                  @for (st of pipeline; track st.label; let i = $index) {
+                    <li [class.done]="pipelineStep() > i" [class.running]="pipelineStep() === i">
+                      <span class="pl-icon" aria-hidden="true">
+                        @if (pipelineStep() > i) {
+                          <i class="fa-solid fa-check"></i>
+                        } @else if (pipelineStep() === i) {
+                          <i class="fa-solid fa-circle-notch fa-spin"></i>
+                        } @else {
+                          <i class="fa-regular fa-circle"></i>
+                        }
+                      </span>
+                      <span class="pl-text">
+                        <b>{{ st.label }}</b>
+                        <small>{{ st.detail }}</small>
+                      </span>
+                    </li>
+                  }
+                </ol>
+                <div class="stack-chips">
+                  @for (
+                    t of ['Angular 21', 'SSR', 'Node.js', 'PostgreSQL', 'Docker', 'CI/CD'];
+                    track t
+                  ) {
+                    <span>{{ t }}</span>
+                  }
+                </div>
+              </div>
+            </aside>
+          </div>
+        }
+
+        <!-- ═══════════════════════════ AUTOMAÇÕES ═══════════════════════════ -->
+        @case ('automation') {
+          <div class="auto-grid">
+            <section class="sc-card flow-card" aria-label="Fluxo do robô">
+              <h4 class="sc-card-h">
+                Fluxo em execução <span class="live-tag"><i aria-hidden="true"></i>ao vivo</span>
+              </h4>
+              <div class="flow-scroll">
+                <svg
+                  class="flow"
+                  viewBox="0 38 670 256"
+                  role="img"
+                  aria-label="E-mail para robô leitor, validação fiscal, e daí para o ERP ou para um alerta à equipe"
+                >
+                  <defs>
+                    <linearGradient id="flowGrad" x1="0" x2="1">
+                      <stop offset="0" stop-color="#00f2fe" stop-opacity=".15" />
+                      <stop offset="1" stop-color="#00f2fe" stop-opacity=".6" />
+                    </linearGradient>
+                  </defs>
+                  @for (e of flowEdges; track e.id; let i = $index) {
+                    <path [attr.id]="'edge-' + e.id" class="flow-edge" [attr.d]="e.d" />
+                    <path
+                      class="flow-edge-glow"
+                      [attr.d]="e.d"
+                      [style.animation-delay.ms]="i * 300"
+                    />
+                    @for (k of [0, 1, 2]; track k) {
+                      <circle class="packet" [class.alt]="e.id === 'e4'" r="4">
+                        <animateMotion
+                          [attr.dur]="e.id === 'e4' ? '3.6s' : '1.8s'"
+                          repeatCount="indefinite"
+                          [attr.begin]="k * (e.id === 'e4' ? 1.2 : 0.6) + i * 0.25 + 's'"
+                          [attr.path]="e.d"
+                        />
+                      </circle>
+                    }
+                  }
+                  @for (n of flowNodes; track n.id; let i = $index) {
+                    <g
+                      class="flow-node"
+                      [class.active]="activeNode() === i"
+                      [attr.transform]="'translate(' + n.x + ' ' + n.y + ')'"
+                    >
+                      <circle class="fn-halo" r="34" />
+                      <circle class="fn-core" r="26" />
+                      <foreignObject x="-12" y="-12" width="24" height="24">
+                        <div class="fn-icon"><i class="fa-solid" [class]="n.icon"></i></div>
+                      </foreignObject>
+                      <text class="fn-label" y="48" text-anchor="middle">{{ n.label }}</text>
+                      <text class="fn-sub" y="63" text-anchor="middle">{{ n.sub }}</text>
+                    </g>
+                  }
+                </svg>
+              </div>
+            </section>
+
+            <section class="sc-card log-card" aria-label="Registro de execução">
+              <h4 class="sc-card-h">Registro do robô</h4>
+              <ol class="log" aria-live="off">
+                @for (l of logs(); track l.id) {
+                  <li [attr.data-tone]="l.tone">
+                    <time>{{ l.time }}</time>
+                    <span>{{ l.text }}</span>
+                  </li>
+                }
+                <li class="log-cursor" aria-hidden="true"><span></span></li>
+              </ol>
+            </section>
+
+            <section class="auto-metrics" aria-label="Resultados">
+              <div class="metric">
+                <span class="metric-label">Notas processadas no mês</span>
+                <b class="metric-val"><span [appCountUp]="processed()" [duration]="2200"></span></b>
+                <span class="metric-foot">sem digitação manual</span>
+              </div>
+              <div class="metric">
+                <span class="metric-label">Horas devolvidas à equipe</span>
+                <b class="metric-val"
+                  ><span [appCountUp]="126" [duration]="2200" [delay]="150"></span
+                  ><small> h/mês</small></b
+                >
+                <span class="metric-foot">≈ 0,8 pessoa em tempo integral</span>
+              </div>
+              <div class="metric">
+                <span class="metric-label">Tempo por nota</span>
+                <b class="metric-val"
+                  ><span [appCountUp]="4" [duration]="1600" [delay]="300"></span
+                  ><small> s</small></b
+                >
+                <span class="metric-foot">antes: cerca de 3 min</span>
+              </div>
+              <div class="metric">
+                <span class="metric-label">Precisão do lançamento</span>
+                <b class="metric-val"
+                  ><span [appCountUp]="99.7" [decimals]="1" [duration]="2400" [delay]="450"></span
+                  ><small>%</small></b
+                >
+                <span class="metric-foot">exceções vão para revisão</span>
+              </div>
+            </section>
+
+            <section class="sc-card compare-card" aria-label="Antes e depois">
+              <h4 class="sc-card-h">Esforço diário da equipe fiscal</h4>
+              <div class="compare">
+                <div class="cmp-row">
+                  <span class="cmp-name">Antes · digitação manual</span>
+                  <div class="cmp-track">
+                    <span class="cmp-bar before" [style.width.%]="compareOn() ? 100 : 0"></span>
+                  </div>
+                  <b class="cmp-val">6 h</b>
+                </div>
+                <div class="cmp-row">
+                  <span class="cmp-name">Depois · só exceções</span>
+                  <div class="cmp-track">
+                    <span class="cmp-bar after" [style.width.%]="compareOn() ? 4 : 0"></span>
+                  </div>
+                  <b class="cmp-val">15 min</b>
+                </div>
+              </div>
+            </section>
+          </div>
+        }
+
+        <!-- ═══════════════════════════ BUSINESS INTELLIGENCE ═══════════════════════════ -->
+        @case ('bi') {
+          <div class="bi-wrap">
+            <div class="bi-toolbar">
+              <div class="seg" role="radiogroup" aria-label="Período">
+                @for (p of periods; track p.id) {
+                  <button
+                    type="button"
+                    role="radio"
+                    [attr.aria-checked]="period() === p.id"
+                    [class.active]="period() === p.id"
+                    (click)="setPeriod(p.id)"
+                  >
+                    {{ p.label }}
+                  </button>
+                }
+              </div>
+              <span class="etl-status">
+                <span class="live-dot" aria-hidden="true"></span>
+                ETL concluído · 5 fontes · atualizado há 3 min
+              </span>
+            </div>
+
+            <div class="bi-kpis">
+              <div class="kpi">
+                <span class="kpi-label">Receita</span>
+                <b
+                  class="kpi-val"
+                  [appCountUp]="bi().kpis.revenue"
+                  format="compact-brl"
+                  [duration]="2000"
+                ></b>
+                <span class="delta up"
+                  ><i class="fa-solid fa-arrow-trend-up" aria-hidden="true"></i> +{{
+                    bi().deltas.revenue.toLocaleString('pt-BR')
+                  }}% vs. período anterior</span
+                >
+              </div>
+              <div class="kpi">
+                <span class="kpi-label">Ticket médio</span>
+                <b
+                  class="kpi-val"
+                  [appCountUp]="bi().kpis.ticket"
+                  format="brl"
+                  [duration]="2000"
+                  [delay]="100"
+                ></b>
+                <span class="delta up"
+                  ><i class="fa-solid fa-arrow-trend-up" aria-hidden="true"></i> +{{
+                    bi().deltas.ticket.toLocaleString('pt-BR')
+                  }}%</span
+                >
+              </div>
+              <div class="kpi">
+                <span class="kpi-label">Margem bruta</span>
+                <b class="kpi-val"
+                  ><span
+                    [appCountUp]="bi().kpis.margin"
+                    [decimals]="1"
+                    [duration]="2000"
+                    [delay]="200"
+                  ></span
+                  >%</b
+                >
+                <span class="delta up"
+                  ><i class="fa-solid fa-arrow-trend-up" aria-hidden="true"></i> +{{
+                    bi().deltas.margin.toLocaleString('pt-BR')
+                  }}
+                  p.p.</span
+                >
+              </div>
+              <div class="kpi">
+                <span class="kpi-label">Clientes ativos</span>
+                <b
+                  class="kpi-val"
+                  [appCountUp]="bi().kpis.clients"
+                  [duration]="2000"
+                  [delay]="300"
+                ></b>
+                <span class="delta up"
+                  ><i class="fa-solid fa-arrow-trend-up" aria-hidden="true"></i> +{{
+                    bi().deltas.clients.toLocaleString('pt-BR')
+                  }}%</span
+                >
+              </div>
+            </div>
+
+            <div class="bi-grid">
+              <section class="sc-card chart-card" aria-label="Receita no período">
+                <h4 class="sc-card-h">Receita no período</h4>
+                <div class="line-wrap" #lineWrap>
+                  <svg
+                    class="line-chart"
+                    [attr.viewBox]="'0 0 ' + line().w + ' ' + chart.h"
+                    role="img"
+                    [attr.aria-label]="
+                      'Receita por ' +
+                      (period() === '12m' ? 'mês' : period() === '90d' ? 'semana' : 'dia')
+                    "
+                    (pointermove)="onChartMove($event)"
+                    (pointerleave)="hoverIdx.set(null)"
+                  >
+                    <defs>
+                      <linearGradient id="areaGrad" x1="0" x2="0" y1="0" y2="1">
+                        <stop offset="0" stop-color="#00c6ff" stop-opacity=".28" />
+                        <stop offset="1" stop-color="#00c6ff" stop-opacity="0" />
+                      </linearGradient>
+                    </defs>
+                    @for (t of line().ticks; track $index) {
+                      <line
+                        class="grid"
+                        [attr.x1]="chart.padL"
+                        [attr.x2]="line().w - chart.padR"
+                        [attr.y1]="t.y"
+                        [attr.y2]="t.y"
+                      />
+                      <text
+                        class="axis"
+                        [attr.x]="chart.padL - 8"
+                        [attr.y]="t.y + 4"
+                        text-anchor="end"
+                      >
+                        {{ t.label }}
+                      </text>
+                    }
+                    @for (x of line().xLabels; track $index) {
+                      <text class="axis" [attr.x]="x.x" [attr.y]="chart.h - 8" text-anchor="middle">
+                        {{ x.label }}
+                      </text>
+                    }
+                    <path
+                      class="area"
+                      [appReplay]="period()"
+                      [replayInitial]="true"
+                      [attr.d]="line().area"
+                      fill="url(#areaGrad)"
+                    />
+                    <path
+                      class="stroke"
+                      [appReplay]="period()"
+                      [replayInitial]="true"
+                      [attr.d]="line().d"
+                      pathLength="1"
+                    />
+                    @if (hoverPoint(); as hp) {
+                      <line
+                        class="crosshair"
+                        [attr.x1]="hp.x"
+                        [attr.x2]="hp.x"
+                        [attr.y1]="chart.padT"
+                        [attr.y2]="line().baseY"
+                      />
+                      <circle class="hover-dot" [attr.cx]="hp.x" [attr.cy]="hp.y" r="5" />
+                    }
+                    <rect
+                      class="hit"
+                      [attr.x]="chart.padL"
+                      [attr.y]="chart.padT"
+                      [attr.width]="line().w - chart.padL - chart.padR"
+                      [attr.height]="line().baseY - chart.padT"
+                    />
+                  </svg>
+                  @if (hoverPoint(); as hp) {
+                    <div
+                      class="tooltip"
+                      [style.left.%]="tooltipLeft(hp.x)"
+                      [class.flip]="tooltipLeft(hp.x) > 72"
+                    >
+                      <span>{{ hp.label }}</span>
+                      <b>{{ pointValue(hp.v) }}</b>
+                    </div>
+                  }
+                </div>
+              </section>
+
+              <section class="sc-card" aria-label="Receita por região">
+                <h4 class="sc-card-h">Receita por região</h4>
+                <ul class="hbars">
+                  @for (r of bi().regions; track r.name; let i = $index) {
+                    <li
+                      (pointerenter)="hoverRegion.set(i)"
+                      (pointerleave)="hoverRegion.set(null)"
+                      [class.dim]="hoverRegion() !== null && hoverRegion() !== i"
+                    >
+                      <span class="hb-name">{{ r.name }}</span>
+                      <div class="hb-track">
+                        <span
+                          class="hb-bar"
+                          [style.width.%]="chartsOn() ? (r.value / regionMax()) * 100 : 0"
+                          [style.transition-delay.ms]="i * 90"
+                        ></span>
+                      </div>
+                      <b class="hb-val">{{
+                        hoverRegion() === i
+                          ? ((r.value / regionTotal()) * 100).toFixed(1).replace('.', ',') + '%'
+                          : compactBrl(r.value)
+                      }}</b>
+                    </li>
+                  }
+                </ul>
+                <p class="hb-hint">Passe o mouse para ver a participação no total.</p>
+              </section>
+
+              <section class="sc-card" aria-label="Vendas por canal">
+                <h4 class="sc-card-h">Vendas por canal</h4>
+                <div class="donut-wrap">
+                  <svg class="donut" viewBox="0 0 120 120" aria-hidden="true">
+                    <circle class="donut-bg" cx="60" cy="60" r="44" />
+                    @for (s of donut(); track s.name; let i = $index) {
+                      <circle
+                        class="donut-seg"
+                        cx="60"
+                        cy="60"
+                        r="44"
+                        pathLength="100"
+                        [style.stroke]="s.color"
+                        [style.stroke-dasharray]="(chartsOn() ? s.len : 0) + ' 100'"
+                        [style.stroke-dashoffset]="s.offset"
+                        [style.transition-delay.ms]="i * 120"
+                      />
+                    }
+                  </svg>
+                  <div class="donut-center">
+                    <b><span [appCountUp]="bi().channels[0].share" [duration]="1600"></span>%</b>
+                    <span>{{ bi().channels[0].name }}</span>
+                  </div>
+                </div>
+                <ul class="legend">
+                  @for (s of donut(); track s.name) {
+                    <li>
+                      <span class="sw" [style.background]="s.color" aria-hidden="true"></span>
+                      <span>{{ s.name }}</span>
+                      <b>{{ s.share }}%</b>
+                    </li>
+                  }
+                </ul>
+              </section>
+            </div>
+          </div>
+        }
+      }
+
+      <!-- Rodapé -->
+      <footer class="sc-foot">
+        <p>
+          Quer algo assim no seu negócio? Montamos o escopo com você e entregamos com relatórios
+          semanais.
+        </p>
+        <div class="sc-foot-actions">
+          <a
+            routerLink="/metodologia"
+            [fragment]="meta().fragment"
+            class="btn-secondary"
+            (click)="close()"
+          >
+            <span>Entenda o fluxo</span>
+          </a>
+          <a routerLink="/contato" class="btn-primary" (click)="close()">
+            <span>Solicitar orçamento</span>
+          </a>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>

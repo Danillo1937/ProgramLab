@@ -1,9 +1,10 @@
 import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RevealDirective } from '../../shared/reveal.directive';
 
 @Component({
   selector: 'app-contact',
-  imports: [FormsModule],
+  imports: [FormsModule, RevealDirective],
   templateUrl: './contact.html',
   styleUrl: './contact.css'
 })

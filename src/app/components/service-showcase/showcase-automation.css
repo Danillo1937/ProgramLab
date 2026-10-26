@@ -1,0 +1,130 @@
+/* Estilos do exemplo Automações — separados para respeitar o limite de CSS por arquivo do projeto. */
+/* ═══════════════════ AUTOMAÇÃO ═══════════════════ */
+.auto-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr);
+  grid-template-areas:
+    'flow log'
+    'metrics metrics'
+    'compare compare';
+  gap: 18px;
+}
+.web-grid > *,
+.auto-grid > *,
+.bi-grid > * { min-width: 0; }
+.flow-card { grid-area: flow; }
+.log-card { grid-area: log; display: flex; flex-direction: column; }
+.auto-metrics { grid-area: metrics; }
+.compare-card { grid-area: compare; }
+
+.live-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--sc-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--success);
+}
+.live-tag i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--success);
+  animation: live 1.8s ease-out infinite;
+}
+
+.flow-scroll { overflow-x: auto; scrollbar-width: thin; }
+.flow { display: block; width: 100%; min-width: 560px; height: auto; }
+.flow-edge { fill: none; stroke: rgba(255, 255, 255, 0.08); stroke-width: 2; }
+.flow-edge-glow {
+  fill: none;
+  stroke: url(#flowGrad);
+  stroke-width: 2;
+  stroke-dasharray: 6 10;
+  animation: dash 1.2s linear infinite;
+}
+@keyframes dash {
+  to { stroke-dashoffset: -32; }
+}
+.packet { fill: var(--primary); filter: drop-shadow(0 0 6px rgba(0, 242, 254, 0.9)); }
+.packet.alt { fill: var(--warn); filter: drop-shadow(0 0 6px rgba(245, 179, 61, 0.9)); }
+
+.fn-halo { fill: rgba(0, 242, 254, 0.06); stroke: rgba(0, 242, 254, 0.12); transition: all 0.5s ease; transform-box: fill-box; transform-origin: center; }
+.fn-core { fill: #0e1728; stroke: rgba(255, 255, 255, 0.14); stroke-width: 1.5; transition: all 0.4s ease; }
+.fn-icon { width: 24px; height: 24px; display: grid; place-items: center; }
+.fn-icon i { font-size: 15px; color: var(--text-muted); transition: color 0.4s ease; }
+.fn-label { fill: var(--text-main); font-size: 12.5px; font-weight: 600; font-family: var(--font-body); }
+.fn-sub { fill: var(--text-muted); font-size: 10.5px; font-family: var(--sc-mono); }
+.flow-node.active .fn-core { stroke: var(--primary); fill: #0b2433; }
+.flow-node.active .fn-halo { fill: rgba(0, 242, 254, 0.14); stroke: rgba(0, 242, 254, 0.5); transform: scale(1.12); }
+.flow-node.active .fn-icon i { color: var(--primary); }
+
+.log {
+  list-style: none;
+  flex: 1;
+  min-height: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 6px;
+  padding: 14px;
+  border-radius: 12px;
+  background: #050810;
+  border: 1px solid var(--sc-line);
+  font-family: var(--sc-mono);
+  font-size: 0.72rem;
+  overflow: hidden;
+}
+.log li { display: flex; gap: 10px; line-height: 1.45; animation: log-in 0.4s ease both; }
+.log li,
+.log li * { font-family: var(--sc-mono); }
+.log time { flex: none; color: var(--text-dark); }
+.log li[data-tone='muted'] span { color: var(--text-muted); }
+.log li[data-tone='cyan'] span { color: var(--primary); }
+.log li[data-tone='green'] span { color: var(--success); }
+.log li[data-tone='amber'] span { color: var(--warn); }
+.log-cursor span {
+  width: 8px;
+  height: 14px;
+  background: var(--primary);
+  animation: blink 1s steps(1) infinite;
+}
+@keyframes blink {
+  50% { opacity: 0; }
+}
+@keyframes log-in {
+  from { opacity: 0; transform: translateY(6px); }
+}
+
+.auto-metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.metric {
+  padding: 18px;
+  border-radius: 16px;
+  border: 1px solid var(--sc-line);
+  background: linear-gradient(160deg, rgba(0, 242, 254, 0.05), transparent 60%), var(--sc-surface-2);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.metric-label { font-size: 0.78rem; color: var(--text-muted); }
+.metric-val {
+  font-family: var(--font-title);
+  font-size: clamp(1.6rem, 2.6vw, 2.2rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+.metric-val small { font-size: 0.5em; font-weight: 600; color: var(--text-muted); }
+.metric-foot { font-size: 0.74rem; color: var(--text-dark); }
+
+.compare { display: flex; flex-direction: column; gap: 14px; }
+.cmp-row { display: grid; grid-template-columns: 200px 1fr 64px; gap: 14px; align-items: center; }
+.cmp-name { font-size: 0.84rem; color: var(--text-muted); }
+.cmp-track { height: 12px; border-radius: 6px; background: rgba(255, 255, 255, 0.04); overflow: hidden; }
+.cmp-bar { display: block; height: 100%; border-radius: 6px; transition: width 1.6s cubic-bezier(0.87, 0, 0.13, 1); }
+.cmp-bar.before { background: linear-gradient(90deg, rgba(245, 179, 61, 0.35), var(--warn)); }
+.cmp-bar.after { background: var(--primary-gradient); transition-delay: 0.5s; min-width: 0; }
+.cmp-val { font-family: var(--sc-mono); font-size: 0.86rem; text-align: right; }
+

@@ -8,7 +8,7 @@
   <section class="contact-section container-custom">
     <div class="contact-grid">
       <!-- Contact Info Sidebar -->
-      <div class="contact-info-panel">
+      <div class="contact-info-panel" appReveal>
         <span class="badge">Conecte-se Conosco</span>
         <h1 class="contact-title">Pronto para Elevarmos seu Negócio?</h1>
         <p class="contact-desc">
@@ -55,7 +55,7 @@
       </div>
 
       <!-- Contact Form Panel -->
-      <div class="contact-form-panel glass-panel">
+      <div class="contact-form-panel glass-panel" appReveal [revealDelay]="150">
         @if (submitSuccess()) {
         <div class="success-overlay animate-fade-in">
           <div class="success-card">

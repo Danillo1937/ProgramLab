@@ -7,7 +7,7 @@
 
   <!-- Hero Section -->
   <header class="hero-section container-custom">
-    <div class="hero-content">
+    <div class="hero-content" appReveal>
       <span class="badge"> Engenharia & Inteligência de Dados</span>
       <h1 class="hero-title">
         Transformamos Processos em <span class="gradient-text-hybrid">Código de Alta Performance</span>
@@ -69,29 +69,57 @@
           <span class="mockup-title">core-engine-v2.bin</span>
         </div>
         <div class="mockup-body">
-          <div class="console-line text-cyan">> initializing programlab core...</div>
-          <div class="console-line text-purple">> mapping systems & workflows...</div>
-          <div class="console-line text-green">> connection status: SECURE [100%]</div>
-          <div class="dashboard-stats">
+          @for (line of consoleLines; track line.text; let i = $index) {
+            <div
+              class="console-line"
+              [class.text-cyan]="line.tone === 'cyan'"
+              [class.text-purple]="line.tone === 'purple'"
+              [class.text-green]="line.tone === 'green'"
+              [class.is-typing]="typingLine() === i"
+            >{{ line.text.slice(0, typed()[i]) }}</div>
+          }
+          <div class="dashboard-stats" [class.is-live]="bootDone()">
             <div class="dash-stat">
               <span class="d-label">API Latency</span>
-              <span class="d-val">12ms</span>
+              <span class="d-val">
+                @if (bootDone()) {
+                  <span [appCountUp]="latency()" suffix="ms" [duration]="1400"></span>
+                } @else {
+                  <span>0ms</span>
+                }
+              </span>
             </div>
             <div class="dash-stat">
               <span class="d-label">ETL Pipelines</span>
-              <span class="d-val text-green">Active</span>
+              <span class="d-val text-green">
+                <span class="live-dot" aria-hidden="true"></span>
+                @if (bootDone()) {
+                  <span>Active · </span><span [appCountUp]="pipelines()" [duration]="1600" [delay]="150"></span>
+                } @else {
+                  <span>Booting</span>
+                }
+              </span>
             </div>
             <div class="dash-stat">
               <span class="d-label">Automation RPA</span>
-              <span class="d-val text-cyan">99.8%</span>
+              <span class="d-val text-cyan">
+                @if (bootDone()) {
+                  <span [appCountUp]="rpaRate()" [decimals]="1" suffix="%" [duration]="2000" [delay]="300"></span>
+                } @else {
+                  <span>0,0%</span>
+                }
+              </span>
             </div>
           </div>
-          <div class="dashboard-chart">
-            <div class="chart-bar" style="height: 40%"></div>
-            <div class="chart-bar" style="height: 65%"></div>
-            <div class="chart-bar" style="height: 50%"></div>
-            <div class="chart-bar" style="height: 85%"></div>
-            <div class="chart-bar active" style="height: 95%"></div>
+          <div class="dashboard-chart" aria-hidden="true">
+            @for (h of bars(); track $index; let last = $last) {
+              <div
+                class="chart-bar"
+                [class.active]="last"
+                [style.height.%]="h"
+                [style.transition-delay.ms]="$index * 90"
+              ></div>
+            }
           </div>
         </div>
       </div>
@@ -100,7 +128,7 @@
 
   <!-- Services Section -->
   <section class="services-section container-custom">
-    <div class="section-header text-center">
+    <div class="section-header text-center" appReveal>
       <span class="badge">Nossos Pilares</span>
       <h2 class="section-title">Soluções Corporativas Premium</h2>
       <p class="section-subtitle">Aceleramos a transformação digital de sua empresa com especialidade de ponta.</p>
@@ -108,7 +136,7 @@
 
     <div class="services-grid">
       <!-- Dev Web -->
-      <div class="service-card glass-panel">
+      <div class="service-card glass-panel corners" appReveal [revealDelay]="0">
         <div class="card-icon-wrapper purple-bg">
           <i class="fa-solid fa-code card-icon"></i>
         </div>
@@ -120,10 +148,14 @@
           <span>Entenda o fluxo</span>
           <i class="fa-solid fa-chevron-right"></i>
         </a>
+        <button type="button" class="card-example" (click)="openShowcase('web', $event)">
+          <span class="card-example-icon" aria-hidden="true"><i class="fa-solid fa-play"></i></span>
+          <span>Ver exemplo</span>
+        </button>
       </div>
 
       <!-- Automations -->
-      <div class="service-card glass-panel">
+      <div class="service-card glass-panel corners" appReveal [revealDelay]="120">
         <div class="card-icon-wrapper cyan-bg">
           <i class="fa-solid fa-robot card-icon"></i>
         </div>
@@ -135,10 +167,14 @@
           <span>Entenda o fluxo</span>
           <i class="fa-solid fa-chevron-right"></i>
         </a>
+        <button type="button" class="card-example" (click)="openShowcase('automation', $event)">
+          <span class="card-example-icon" aria-hidden="true"><i class="fa-solid fa-play"></i></span>
+          <span>Ver exemplo</span>
+        </button>
       </div>
 
       <!-- BI & Data -->
-      <div class="service-card glass-panel">
+      <div class="service-card glass-panel corners" appReveal [revealDelay]="240">
         <div class="card-icon-wrapper green-bg">
           <i class="fa-solid fa-chart-pie card-icon"></i>
         </div>
@@ -150,33 +186,39 @@
           <span>Entenda o fluxo</span>
           <i class="fa-solid fa-chevron-right"></i>
         </a>
+        <button type="button" class="card-example" (click)="openShowcase('bi', $event)">
+          <span class="card-example-icon" aria-hidden="true"><i class="fa-solid fa-play"></i></span>
+          <span>Ver exemplo</span>
+        </button>
       </div>
     </div>
   </section>
 
   <!-- Project Simulator Section -->
   <section class="simulator-section container-custom">
-    <div class="glass-panel simulator-card">
+    <div class="glass-panel simulator-card" appReveal>
       <div class="simulator-grid">
         <!-- Input controls -->
         <div class="simulator-controls">
           <span class="badge">Simulador Digital</span>
           <h2 class="controls-title">Projete Seu Escopo</h2>
           <p class="controls-desc">Selecione as tecnologias que deseja incorporar e obtenha uma estimativa instantânea de prazo e investimento.</p>
-          
+
           <!-- Services Checkboxes -->
           <div class="control-group">
-            <label class="group-label">Serviços Desejados</label>
-            <div class="services-pills">
+            <span class="group-label" id="lbl-services">Serviços Desejados</span>
+            <div class="services-pills" role="group" aria-labelledby="lbl-services">
               @for (opt of serviceOptions; track opt.id) {
-                <button 
-                  type="button" 
-                  class="pill-btn" 
-                  [class.active]="selectedServices().includes(opt.id)"
+                <button
+                  type="button"
+                  class="pill-btn"
+                  [class.active]="isSelected(opt.id)"
+                  [attr.aria-pressed]="isSelected(opt.id)"
                   (click)="toggleService(opt.id)"
                 >
                   <i class="fa-solid" [class]="opt.icon"></i>
                   <span>{{ opt.name }}</span>
+                  <span class="pill-check" aria-hidden="true"><i class="fa-solid fa-check"></i></span>
                 </button>
               }
             </div>
@@ -184,48 +226,130 @@
 
           <!-- Complexity Choice -->
           <div class="control-group">
-            <label class="group-label">Complexidade Técnica</label>
-            <div class="toggle-group">
-              <button type="button" class="toggle-btn" [class.active]="complexity() === 'small'" (click)="setComplexity('small')">
-                <span>Simples</span>
-              </button>
-              <button type="button" class="toggle-btn" [class.active]="complexity() === 'medium'" (click)="setComplexity('medium')">
-                <span>Intermediário</span>
-              </button>
-              <button type="button" class="toggle-btn" [class.active]="complexity() === 'large'" (click)="setComplexity('large')">
-                <span>Complexo / Enterprise</span>
-              </button>
+            <span class="group-label" id="lbl-complexity">Complexidade Técnica</span>
+            <div
+              class="toggle-group"
+              role="radiogroup"
+              aria-labelledby="lbl-complexity"
+              [style.--count]="complexityLevels.length"
+              [style.--index]="complexityIndex()"
+            >
+              <span class="toggle-indicator" aria-hidden="true"></span>
+              @for (level of complexityLevels; track level.id) {
+                <button
+                  type="button"
+                  class="toggle-btn"
+                  role="radio"
+                  [attr.aria-checked]="complexity() === level.id"
+                  [class.active]="complexity() === level.id"
+                  (click)="setComplexity(level.id)"
+                >
+                  <span>{{ level.label }}</span>
+                </button>
+              }
+            </div>
+            <div class="complexity-meter" aria-hidden="true">
+              @for (seg of [0, 1, 2, 3, 4, 5]; track seg) {
+                <span [class.on]="seg < (complexityIndex() + 1) * 2"></span>
+              }
             </div>
           </div>
 
           <!-- Urgency Choice -->
           <div class="control-group">
-            <label class="group-label">Prioridade de Entrega</label>
-            <div class="toggle-group">
-              <button type="button" class="toggle-btn" [class.active]="urgency() === 'standard'" (click)="setUrgency('standard')">
-                <span>Padrão</span>
-              </button>
-              <button type="button" class="toggle-btn" [class.active]="urgency() === 'fast'" (click)="setUrgency('fast')">
-                <span>Acelerada (+25%)</span>
-              </button>
+            <span class="group-label" id="lbl-urgency">Prioridade de Entrega</span>
+            <div
+              class="toggle-group"
+              role="radiogroup"
+              aria-labelledby="lbl-urgency"
+              [style.--count]="urgencyLevels.length"
+              [style.--index]="urgencyIndex()"
+              [class.is-fast]="urgency() === 'fast'"
+            >
+              <span class="toggle-indicator" aria-hidden="true"></span>
+              @for (level of urgencyLevels; track level.id) {
+                <button
+                  type="button"
+                  class="toggle-btn"
+                  role="radio"
+                  [attr.aria-checked]="urgency() === level.id"
+                  [class.active]="urgency() === level.id"
+                  (click)="setUrgency(level.id)"
+                >
+                  @if (level.id === 'fast') {
+                    <i class="fa-solid fa-bolt toggle-bolt" aria-hidden="true"></i>
+                  }
+                  <span>{{ level.label }}</span>
+                </button>
+              }
             </div>
+          </div>
+
+          <!-- Timeline por etapa -->
+          <div class="control-group">
+            <span class="group-label">Linha do Tempo por Etapa</span>
+            @if (estimate().empty) {
+              <p class="timeline-empty">Escolha ao menos um serviço para ver as etapas.</p>
+            } @else {
+              <div class="phase-track" role="img" [attr.aria-label]="'Prazo dividido em ' + estimate().phases.length + ' etapas'">
+                @for (ph of estimate().phases; track ph.id) {
+                  <span class="phase-seg" [attr.data-phase]="ph.id" [style.flex-grow]="ph.days"></span>
+                }
+              </div>
+              <ul class="phase-legend">
+                @for (ph of estimate().phases; track ph.id) {
+                  <li [attr.data-phase]="ph.id">
+                    <span class="phase-dot" aria-hidden="true"></span>
+                    <span class="phase-name">{{ ph.label }}</span>
+                    <b><span [appCountUp]="ph.days" [duration]="1200"></span>d</b>
+                  </li>
+                }
+              </ul>
+            }
           </div>
         </div>
 
         <!-- Output display -->
         <div class="simulator-result">
-          <div class="result-box glass-panel">
-            <h3 class="result-title">Estimativa Preliminar</h3>
-            
+          <div class="result-box glass-panel" [class.is-empty]="estimate().empty">
+            <span class="recalc-beam" [appReplay]="recalcKey()" aria-hidden="true"></span>
+            <div class="result-head">
+              <h3 class="result-title">Estimativa Preliminar</h3>
+              <span class="result-status" aria-live="polite">
+                <span class="status-chip" [appReplay]="recalcKey()">{{ recalcKey() === 0 ? 'Pronto' : 'Recalculado' }}</span>
+              </span>
+            </div>
+
             <div class="value-display">
               <span class="value-label">Valor Estimado</span>
-              <span class="value-number gradient-text-primary">{{ estimate().price }}</span>
+              <span class="value-number gradient-text-primary" [appCountUp]="estimate().price" format="brl" [duration]="2000"></span>
             </div>
 
             <div class="value-display">
               <span class="value-label">Prazo Médio de Entrega</span>
-              <span class="value-time">{{ estimate().time }}</span>
+              <span class="value-time">
+                @if (estimate().empty) {
+                  Selecione um serviço
+                } @else {
+                  <span [appCountUp]="estimate().days" [duration]="1600"></span> dias úteis
+                }
+              </span>
             </div>
+
+            @if (!estimate().empty) {
+              <div class="breakdown">
+                <span class="value-label">Composição do Investimento</span>
+                @for (b of estimate().breakdown; track b.id) {
+                  <div class="breakdown-row">
+                    <div class="breakdown-top">
+                      <span><i class="fa-solid" [class]="b.icon"></i> {{ b.name }}</span>
+                      <b [appCountUp]="b.value" format="brl" [duration]="1400"></b>
+                    </div>
+                    <div class="breakdown-bar"><span [style.width.%]="b.pct"></span></div>
+                  </div>
+                }
+              </div>
+            }
 
             <div class="result-details">
               <p><i class="fa-solid fa-circle-check text-green"></i> Código limpo e versionamento Git</p>
@@ -241,4 +365,13 @@
       </div>
     </div>
   </section>
+
+  @if (showcase(); as kind) {
+    <app-service-showcase
+      [kind]="kind"
+      [origin]="showcaseOrigin()"
+      (kindChange)="showcase.set($event)"
+      (closed)="closeShowcase()"
+    />
+  }
 </div>

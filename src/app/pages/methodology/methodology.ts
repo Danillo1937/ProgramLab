@@ -1,9 +1,10 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { RevealDirective } from '../../shared/reveal.directive';
 
 @Component({
   selector: 'app-methodology',
-  imports: [],
+  imports: [RevealDirective],
   templateUrl: './methodology.html',
   styleUrl: './methodology.css'
 })
