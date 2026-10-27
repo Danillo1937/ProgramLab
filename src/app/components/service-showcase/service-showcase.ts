@@ -17,6 +17,11 @@ import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { CountUpDirective } from '../../shared/count-up.directive';
 import { ReplayDirective } from '../../shared/replay.directive';
+import { prefersReducedMotion } from '../../shared/motion';
+
+// Janela "Ver exemplo" que abre pelos cards de Soluções Corporativas Premium.
+// Tem três exemplos (site, automação e BI), cada um com animações próprias.
+// Todos os nomes, números e empresas daqui são fictícios, só para demonstração.
 
 export type ShowcaseKind = 'web' | 'automation' | 'bi';
 type Device = 'desktop' | 'tablet' | 'mobile';
@@ -33,6 +38,8 @@ interface ShowcaseMeta {
   fragment: string;
 }
 
+// Textos de cada exemplo: nome da aba, título, empresa fictícia e resumo.
+// O "fragment" é a seção da página Metodologia que o botão "Entenda o fluxo" abre.
 const META: ShowcaseMeta[] = [
   {
     kind: 'web',
@@ -69,7 +76,7 @@ const META: ShowcaseMeta[] = [
   },
 ];
 
-// ───────────────────────────── Dados: Sites ─────────────────────────────
+// Dados do exemplo de site: pedidos da tabela, etapas do deploy e notas de qualidade.
 const ORDERS = [
   { id: '#48211', client: 'Mercado Bom Preço', value: 'R$ 12.480', status: 'Faturado', tone: 'ok' },
   {
@@ -104,7 +111,8 @@ const SCORES = [
   { label: 'SEO', value: 100 },
 ];
 
-// ───────────────────────────── Dados: Automação ─────────────────────────────
+// Dados do exemplo de automação: as caixas do fluxo (com a posição de cada uma no desenho),
+// as linhas que ligam as caixas e as mensagens que aparecem no registro do robô.
 const FLOW_NODES = [
   {
     id: 'mail',
@@ -147,7 +155,7 @@ const LOG_SCRIPT: { tone: 'muted' | 'cyan' | 'green' | 'amber'; text: string }[]
   { tone: 'muted', text: 'ciclo concluído · próxima varredura em 60 s' },
 ];
 
-// ───────────────────────────── Dados: BI ─────────────────────────────
+// Dados do exemplo de BI: um conjunto para cada período (30 dias, 90 dias e 12 meses).
 interface PeriodData {
   labels: string[];
   revenue: number[]; // R$ mil por ponto
@@ -157,7 +165,8 @@ interface PeriodData {
   channels: { name: string; share: number }[];
 }
 
-/** Série determinística (sem Math.random) para o painel ficar igual a cada abertura. */
+// Gera a curva de receita do gráfico. Usa uma conta fixa (sem sorteio) para o gráfico
+// ficar sempre igual toda vez que a janela abre.
 function series(n: number, base: number, amp: number, trend: number, seed: number): number[] {
   return Array.from({ length: n }, (_, i) => {
     const wave = Math.sin(i * 0.9 + seed) * amp + Math.sin(i * 0.37 + seed * 2) * amp * 0.6;
@@ -230,29 +239,33 @@ const BI_DATA: Record<Period, PeriodData> = {
   },
 };
 
-/** Paleta categórica validada (OKLCH, daltonismo e contraste) contra a superfície do painel. */
+// Cores das fatias do gráfico de canais. Foram testadas para continuarem diferentes entre si
+// para quem tem daltonismo e para terem contraste com o fundo escuro.
 const CHANNEL_COLORS = ['#0891b2', '#8b5cf6', '#d97706', '#db2777'];
 
+// Altura e margens do gráfico de linha (a largura acompanha o tamanho da tela).
 const CHART = { h: 260, padL: 56, padR: 16, padT: 16, padB: 32 };
 
 @Component({
   selector: 'app-service-showcase',
   imports: [RouterLink, CountUpDirective, ReplayDirective],
   templateUrl: './service-showcase.html',
-  // Ordem importa: a folha principal (com as regras responsivas) vem por último.
+  // O CSS foi dividido por exemplo por causa do limite de tamanho por arquivo do projeto.
+  // A ordem importa: o service-showcase.css vem por último porque tem as regras de celular.
   styleUrls: [
     './showcase-web.css',
     './showcase-automation.css',
     './showcase-bi.css',
     './service-showcase.css',
   ],
+  // Escuta o teclado: Esc fecha e Tab fica preso dentro da janela.
   host: {
     '(document:keydown)': 'onKeydown($event)',
   },
 })
 export class ServiceShowcaseComponent {
   readonly kind = input.required<ShowcaseKind>();
-  /** Ponto (em % da viewport) de onde o painel "nasce". */
+  // Ponto da tela de onde a janela começa a abrir (vem do botão clicado).
   readonly origin = input<{ x: number; y: number }>({ x: 50, y: 50 });
   readonly kindChange = output<ShowcaseKind>();
   readonly closed = output<void>();
@@ -268,10 +281,10 @@ export class ServiceShowcaseComponent {
   protected readonly metas = META;
   protected readonly meta = computed(() => META.find((m) => m.kind === this.kind())!);
   protected readonly closing = signal(false);
-  /** Incrementa a cada troca de exemplo para reiniciar animações de entrada. */
+  // Muda a cada troca de aba, para repetir a animação de entrada do conteúdo.
   protected readonly runId = signal(0);
 
-  // Web
+  // Estado do exemplo de site.
   protected readonly orders = ORDERS;
   protected readonly pipeline = PIPELINE;
   protected readonly scores = SCORES;
@@ -280,7 +293,7 @@ export class ServiceShowcaseComponent {
   protected readonly pipelineStep = signal(0);
   protected readonly ringsOn = signal(false);
 
-  // Automação
+  // Estado do exemplo de automação.
   protected readonly flowNodes = FLOW_NODES;
   protected readonly flowEdges = FLOW_EDGES;
   protected readonly activeNode = signal(0);
@@ -288,7 +301,7 @@ export class ServiceShowcaseComponent {
   protected readonly processed = signal(1240);
   protected readonly compareOn = signal(false);
 
-  // BI
+  // Estado do exemplo de BI.
   protected readonly period = signal<Period>('30d');
   protected readonly periods: { id: Period; label: string }[] = [
     { id: '30d', label: '30 dias' },
@@ -298,13 +311,14 @@ export class ServiceShowcaseComponent {
   protected readonly hoverIdx = signal<number | null>(null);
   protected readonly hoverRegion = signal<number | null>(null);
   protected readonly chartsOn = signal(false);
-  protected readonly channelColors = CHANNEL_COLORS;
   protected readonly chart = CHART;
-  /** Largura real do gráfico em px: o SVG desenha 1:1, então os textos nunca escalam. */
+  // Largura real do gráfico na tela. O desenho usa essa medida para os textos dos eixos
+  // não ficarem gigantes ou minúsculos quando a tela muda de tamanho.
   protected readonly chartW = signal(900);
   private readonly lineWrap = viewChild<ElementRef<HTMLElement>>('lineWrap');
   protected readonly bi = computed(() => BI_DATA[this.period()]);
 
+  // Calcula tudo que o gráfico de linha precisa: pontos, curva, área, linhas de grade e rótulos.
   protected readonly line = computed(() => {
     const { revenue, labels } = this.bi();
     const w = this.chartW();
@@ -327,7 +341,7 @@ export class ServiceShowcaseComponent {
         label: formatAxis(v, this.period()),
       });
     }
-    // rótulos do eixo X espaçados por largura disponível (≈ 1 a cada 90 px)
+    // Mostra um rótulo de data a cada 90 px mais ou menos, para não ficarem encavalados.
     const maxLabels = Math.max(3, Math.floor(iw / 90));
     const every = Math.ceil(labels.length / maxLabels);
     const xLabels = pts.filter((_, i) => i % every === 0);
@@ -344,6 +358,7 @@ export class ServiceShowcaseComponent {
     this.bi().regions.reduce((a, r) => a + r.value, 0),
   );
 
+  // Calcula onde começa e termina cada fatia do gráfico de rosca.
   protected readonly donut = computed(() => {
     let acc = 0;
     return this.bi().channels.map((c, i) => {
@@ -359,6 +374,7 @@ export class ServiceShowcaseComponent {
   });
 
   constructor() {
+    // Toda vez que a aba muda, reinicia as animações daquele exemplo.
     effect(() => {
       const kind = this.kind();
       untracked(() => {
@@ -366,7 +382,7 @@ export class ServiceShowcaseComponent {
       });
     });
 
-    // Observa a largura do gráfico de linha quando ele existe (aba BI).
+    // Mede a largura do gráfico de linha (só existe na aba de BI) e refaz o desenho se a tela mudar.
     let ro: ResizeObserver | undefined;
     effect(() => {
       const el = this.lineWrap()?.nativeElement;
@@ -378,8 +394,7 @@ export class ServiceShowcaseComponent {
       });
       ro.observe(el);
     });
-    inject(DestroyRef).onDestroy(() => ro?.disconnect());
-
+    // Ao abrir: trava a rolagem da página de fundo e coloca o foco no botão de fechar.
     afterNextRender(() => {
       const body = this.doc.body;
       const prev = body.style.overflow;
@@ -388,7 +403,9 @@ export class ServiceShowcaseComponent {
       this.cleanupBody = () => (body.style.overflow = prev);
     });
 
+    // Ao fechar: para todos os temporizadores e libera a rolagem da página.
     inject(DestroyRef).onDestroy(() => {
+      ro?.disconnect();
       this.clearAll();
       this.cleanupBody();
     });
@@ -396,17 +413,20 @@ export class ServiceShowcaseComponent {
 
   private cleanupBody: () => void = () => {};
 
-  // ───────────────────────────── Sequências ─────────────────────────────
+  // Roteiro de animação de cada exemplo.
   private start(kind: ShowcaseKind): void {
     this.clearAll();
     this.runId.update((r) => r + 1);
     this.body()?.nativeElement.scrollTo({ top: 0 });
-    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reduce = prefersReducedMotion();
+    // "at" faz algo uma vez depois de um tempo. "every" repete de tempos em tempos.
     const at = (ms: number, fn: () => void) => this.timers.push(setTimeout(fn, reduce ? 0 : ms));
+    // Otimização: o que se repete fica parado enquanto a aba do navegador está em segundo plano.
     const every = (ms: number, fn: () => void) => {
-      if (!reduce) this.intervals.push(setInterval(fn, ms));
+      if (!reduce) this.intervals.push(setInterval(() => !this.doc.hidden && fn(), ms));
     };
 
+    // Site: o portal começa como "esqueleto" carregando, as notas enchem e o deploy avança etapa por etapa.
     if (kind === 'web') {
       this.built.set(false);
       this.pipelineStep.set(0);
@@ -416,6 +436,8 @@ export class ServiceShowcaseComponent {
       PIPELINE.forEach((_, i) => at(700 + i * 750, () => this.pipelineStep.set(i + 1)));
     }
 
+    // Automação: o registro ganha uma mensagem por segundo, o fluxo acende uma caixa por vez
+    // e o contador de notas vai subindo.
     if (kind === 'automation') {
       this.logs.set([]);
       this.activeNode.set(0);
@@ -427,6 +449,7 @@ export class ServiceShowcaseComponent {
         const entry = LOG_SCRIPT[li % LOG_SCRIPT.length];
         const now = new Date();
         const time = now.toLocaleTimeString('pt-BR', { hour12: false });
+        // Guarda só as 8 últimas mensagens para a lista não crescer sem fim.
         this.logs.update((l) => [...l.slice(-7), { id: li, time, ...entry }]);
         li++;
       };
@@ -437,6 +460,7 @@ export class ServiceShowcaseComponent {
       if (reduce) LOG_SCRIPT.slice(1, 8).forEach(pushLog);
     }
 
+    // BI: os gráficos começam vazios e se desenham logo em seguida.
     if (kind === 'bi') {
       this.chartsOn.set(false);
       this.hoverIdx.set(null);
@@ -451,7 +475,7 @@ export class ServiceShowcaseComponent {
     this.intervals = [];
   }
 
-  // ───────────────────────────── Interações ─────────────────────────────
+  // Ações dos botões e do mouse.
   protected select(kind: ShowcaseKind): void {
     if (kind !== this.kind()) this.kindChange.emit(kind);
   }
@@ -462,23 +486,24 @@ export class ServiceShowcaseComponent {
     this.hoverIdx.set(null);
   }
 
+  // Mostra o valor do ponto mais perto do mouse no gráfico de linha.
+  // Otimização: como os pontos têm a mesma distância entre si, a posição do mouse já diz qual é
+  // o ponto, sem precisar comparar com todos.
   protected onChartMove(event: PointerEvent): void {
     const svg = event.currentTarget as SVGSVGElement;
     const r = svg.getBoundingClientRect();
     const x = ((event.clientX - r.left) / r.width) * this.chartW();
-    const pts = this.line().pts;
-    let best = 0;
-    for (let i = 1; i < pts.length; i++) {
-      if (Math.abs(pts[i].x - x) < Math.abs(pts[best].x - x)) best = i;
-    }
-    this.hoverIdx.set(best);
+    const n = this.line().pts.length;
+    const area = this.chartW() - CHART.padL - CHART.padR;
+    const i = Math.round(((x - CHART.padL) / area) * (n - 1));
+    this.hoverIdx.set(Math.min(n - 1, Math.max(0, i)));
   }
 
+  // Fecha com animação: espera a janela encolher (280 ms) e só depois avisa a home.
   protected close(): void {
     if (this.closing()) return;
-    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     this.closing.set(true);
-    setTimeout(() => this.closed.emit(), reduce ? 0 : 280);
+    this.timers.push(setTimeout(() => this.closed.emit(), prefersReducedMotion() ? 0 : 280));
   }
 
   protected onKeydown(e: KeyboardEvent): void {
@@ -488,7 +513,7 @@ export class ServiceShowcaseComponent {
       return;
     }
     if (e.key !== 'Tab') return;
-    // Mantém o foco dentro do painel enquanto ele está aberto.
+    // Tab e Shift+Tab ficam circulando só pelos botões da janela, sem ir para a página de trás.
     const root = this.panel()?.nativeElement;
     if (!root) return;
     const focusables = Array.from(
@@ -508,33 +533,41 @@ export class ServiceShowcaseComponent {
     }
   }
 
-  // ───────────────────────────── Formatação ─────────────────────────────
-  protected brl(n: number): string {
-    return n.toLocaleString('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
-      maximumFractionDigits: 0,
-    });
-  }
+  // Formatação dos números que aparecem nos gráficos.
 
+  // Valor resumido: R$ 1,09 mi ou R$ 542 mil.
   protected compactBrl(n: number): string {
     if (n >= 1_000_000)
       return `R$ ${(n / 1_000_000).toLocaleString('pt-BR', { maximumFractionDigits: 2 })} mi`;
     return `R$ ${(n / 1_000).toLocaleString('pt-BR', { maximumFractionDigits: 0 })} mil`;
   }
 
+  // Valor de um ponto do gráfico de linha, mostrado no balão ao passar o mouse.
   protected pointValue(v: number): string {
     return this.period() === '12m'
       ? `R$ ${(v / 1000).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} mi`
       : `R$ ${v.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} mil`;
   }
 
+  // Posição do balão do gráfico, em porcentagem da largura.
   protected tooltipLeft(x: number): number {
     return (x / this.chartW()) * 100;
   }
+
+  // Variação em relação ao período anterior, no formato 12,4.
+  protected delta(n: number): string {
+    return n.toLocaleString('pt-BR');
+  }
+
+  // Valor da barra de região. Com o mouse em cima, mostra a fatia do total em vez do valor.
+  protected regionLabel(value: number, i: number): string {
+    if (this.hoverRegion() !== i) return this.compactBrl(value);
+    return ((value / this.regionTotal()) * 100).toFixed(1).replace('.', ',') + '%';
+  }
 }
 
-/** Escala com passos "redondos" (1, 2, 2,5, 5 × 10ⁿ) que envolve os dados. */
+// Escolhe valores redondos para as linhas de grade do gráfico (ex.: 50, 60, 70 mil),
+// começando um pouco abaixo do menor valor e terminando um pouco acima do maior.
 function niceScale(min: number, max: number, ticks = 4): { lo: number; hi: number; step: number } {
   const raw = (max - min) / ticks;
   const mag = Math.pow(10, Math.floor(Math.log10(raw)));
@@ -545,13 +578,14 @@ function niceScale(min: number, max: number, ticks = 4): { lo: number; hi: numbe
   return { lo, hi, step };
 }
 
+// Texto dos números do eixo vertical: "70 mil" ou "2,4 mi".
 function formatAxis(v: number, p: Period): string {
   if (p === '12m')
     return v === 0 ? '0' : `${(v / 1000).toLocaleString('pt-BR', { maximumFractionDigits: 2 })} mi`;
   return v === 0 ? '0' : `${Math.round(v)} mil`;
 }
 
-/** Curva suave (Catmull-Rom → Bézier) que passa por todos os pontos. */
+// Desenha uma curva suave que passa por todos os pontos, em vez de uma linha cheia de quinas.
 function smoothPath(pts: { x: number; y: number }[]): string {
   let d = `M ${pts[0].x.toFixed(1)} ${pts[0].y.toFixed(1)}`;
   for (let i = 0; i < pts.length - 1; i++) {

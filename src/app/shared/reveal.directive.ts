@@ -8,14 +8,15 @@ import {
   input,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { whenVisible } from './motion';
 
-/**
- * Revela o elemento quando ele entra na tela (desfoque + subida suave).
- * O estado inicial só é aplicado no navegador, então o SSR e quem tem JS
- * desligado veem o conteúdo normalmente.
- *
- * Uso: <div appReveal [revealDelay]="120"></div>
- */
+// Faz o bloco aparecer subindo e saindo do desfoque quando ele chega na tela.
+// O bloco só fica escondido no navegador; no HTML do servidor ele já aparece normal.
+// O visual da animação está no styles.css (classes .reveal e .is-in).
+//
+// Exemplos de uso:
+// <div appReveal></div>
+// <div appReveal [revealDelay]="120"></div>   entra 120 ms depois (bom para cards em sequência)
 @Directive({ selector: '[appReveal]' })
 export class RevealDirective {
   readonly revealDelay = input(0);
@@ -23,46 +24,31 @@ export class RevealDirective {
   constructor() {
     const el = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
     const isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
-    let observer: IntersectionObserver | undefined;
+    let stopWatching: () => void = () => {};
+    let timer: ReturnType<typeof setTimeout> | undefined;
 
     afterNextRender(() => {
-      if (!isBrowser || typeof IntersectionObserver === 'undefined') return;
-      const rect = el.getBoundingClientRect();
-      // Já visível no primeiro quadro: entra com a sequência de carregamento.
-      el.style.setProperty('--reveal-delay', `${this.revealDelay()}ms`);
+      if (!isBrowser) return;
+      const delay = this.revealDelay();
+      el.style.setProperty('--reveal-delay', `${delay}ms`);
       el.classList.add('reveal');
 
-      // Depois que a entrada termina, a classe sai e o elemento volta às
-      // próprias transições (hover dos cards etc.).
-      const settle = () => {
-        timer = setTimeout(() => el.classList.remove('reveal', 'is-in'), 1000 + this.revealDelay());
-      };
       const show = () => {
         el.classList.add('is-in');
-        settle();
+        // Depois de entrar, remove as classes para não atrapalhar o efeito de passar o mouse nos cards.
+        timer = setTimeout(() => el.classList.remove('reveal', 'is-in'), 1000 + delay);
       };
 
-      observer = new IntersectionObserver(
-        (entries) => {
-          for (const entry of entries) {
-            if (entry.isIntersecting) {
-              show();
-              observer?.unobserve(el);
-            }
-          }
-        },
-        { threshold: 0.15, rootMargin: '0px 0px -8% 0px' },
-      );
-      if (rect.top < innerHeight) {
+      if (el.getBoundingClientRect().top < innerHeight) {
+        // Se já está na tela quando a página abre, espera um instante para a animação de entrada aparecer.
         requestAnimationFrame(() => requestAnimationFrame(show));
       } else {
-        observer.observe(el);
+        stopWatching = whenVisible(el, show, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
       }
     });
 
-    let timer: ReturnType<typeof setTimeout> | undefined;
     inject(DestroyRef).onDestroy(() => {
-      observer?.disconnect();
+      stopWatching();
       clearTimeout(timer);
     });
   }

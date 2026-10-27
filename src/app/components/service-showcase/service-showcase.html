@@ -15,7 +15,7 @@
     aria-describedby="sc-summary"
     (click)="$event.stopPropagation()"
   >
-    <!-- Cabeçalho -->
+    <!-- Topo da janela: abas para trocar de exemplo e botão de fechar -->
     <header class="sc-head">
       <nav class="sc-tabs" aria-label="Exemplos">
         @for (m of metas; track m.kind) {
@@ -44,7 +44,7 @@
     </header>
 
     <div class="sc-body" #body [appReplay]="runId()" [replayInitial]="true">
-      <!-- Introdução -->
+      <!-- Título e resumo do exemplo aberto (os textos ficam no service-showcase.ts, na lista META) -->
       <div class="sc-intro">
         <div>
           <span class="sc-client">{{ meta().client }}</span>
@@ -58,10 +58,12 @@
       </div>
 
       @switch (kind()) {
-        <!-- ═══════════════════════════ SITES & SOFTWARES ═══════════════════════════ -->
+        <!-- Exemplo de site: um portal de pedidos que se monta na tela, com troca de dispositivo,
+             notas de qualidade e as etapas do deploy -->
         @case ('web') {
           <div class="web-grid">
             <section class="web-stage" aria-label="Pré-visualização do portal">
+              <!-- Botões que mudam a largura do navegador de exemplo (desktop, tablet e celular) -->
               <div class="device-switch" role="radiogroup" aria-label="Dispositivo">
                 @for (
                   d of [
@@ -226,6 +228,7 @@
 
               <div class="sc-card">
                 <h4 class="sc-card-h">Esteira de deploy</h4>
+                <!-- Cada etapa fica com o ícone girando enquanto roda e ganha um check quando termina -->
                 <ol class="pipeline">
                   @for (st of pipeline; track st.label; let i = $index) {
                     <li [class.done]="pipelineStep() > i" [class.running]="pipelineStep() === i">
@@ -258,7 +261,8 @@
           </div>
         }
 
-        <!-- ═══════════════════════════ AUTOMAÇÕES ═══════════════════════════ -->
+        <!-- Exemplo de automação: fluxo do robô com os dados andando entre as etapas,
+             registro ao vivo, resultados e comparação de antes e depois -->
         @case ('automation') {
           <div class="auto-grid">
             <section class="sc-card flow-card" aria-label="Fluxo do robô">
@@ -266,6 +270,8 @@
                 Fluxo em execução <span class="live-tag"><i aria-hidden="true"></i>ao vivo</span>
               </h4>
               <div class="flow-scroll">
+                <!-- As bolinhas que andam pelas linhas são os dados passando de uma etapa para outra.
+                     A linha de baixo (laranja) é o caminho das notas com problema -->
                 <svg
                   class="flow"
                   viewBox="0 38 670 256"
@@ -382,10 +388,12 @@
           </div>
         }
 
-        <!-- ═══════════════════════════ BUSINESS INTELLIGENCE ═══════════════════════════ -->
+        <!-- Exemplo de BI: painel de vendas com filtro de período, gráfico de linha com balão
+             ao passar o mouse, barras por região e rosca por canal -->
         @case ('bi') {
           <div class="bi-wrap">
             <div class="bi-toolbar">
+              <!-- Trocar o período troca todos os números e gráficos de uma vez -->
               <div class="seg" role="radiogroup" aria-label="Período">
                 @for (p of periods; track p.id) {
                   <button
@@ -416,7 +424,7 @@
                 ></b>
                 <span class="delta up"
                   ><i class="fa-solid fa-arrow-trend-up" aria-hidden="true"></i> +{{
-                    bi().deltas.revenue.toLocaleString('pt-BR')
+                    delta(bi().deltas.revenue)
                   }}% vs. período anterior</span
                 >
               </div>
@@ -431,7 +439,7 @@
                 ></b>
                 <span class="delta up"
                   ><i class="fa-solid fa-arrow-trend-up" aria-hidden="true"></i> +{{
-                    bi().deltas.ticket.toLocaleString('pt-BR')
+                    delta(bi().deltas.ticket)
                   }}%</span
                 >
               </div>
@@ -448,7 +456,7 @@
                 >
                 <span class="delta up"
                   ><i class="fa-solid fa-arrow-trend-up" aria-hidden="true"></i> +{{
-                    bi().deltas.margin.toLocaleString('pt-BR')
+                    delta(bi().deltas.margin)
                   }}
                   p.p.</span
                 >
@@ -463,7 +471,7 @@
                 ></b>
                 <span class="delta up"
                   ><i class="fa-solid fa-arrow-trend-up" aria-hidden="true"></i> +{{
-                    bi().deltas.clients.toLocaleString('pt-BR')
+                    delta(bi().deltas.clients)
                   }}%</span
                 >
               </div>
@@ -574,11 +582,7 @@
                           [style.transition-delay.ms]="i * 90"
                         ></span>
                       </div>
-                      <b class="hb-val">{{
-                        hoverRegion() === i
-                          ? ((r.value / regionTotal()) * 100).toFixed(1).replace('.', ',') + '%'
-                          : compactBrl(r.value)
-                      }}</b>
+                      <b class="hb-val">{{ regionLabel(r.value, i) }}</b>
                     </li>
                   }
                 </ul>
@@ -624,7 +628,7 @@
         }
       }
 
-      <!-- Rodapé -->
+      <!-- Rodapé fixo com os botões de ação (fecham a janela e levam para a página) -->
       <footer class="sc-foot">
         <p>
           Quer algo assim no seu negócio? Montamos o escopo com você e entregamos com relatórios

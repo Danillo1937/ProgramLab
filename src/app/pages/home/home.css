@@ -158,6 +158,7 @@
   white-space: pre;
 }
 
+/* Cursor piscando no fim da linha que está sendo digitada */
 .console-line.is-typing::after {
   content: '';
   display: inline-block;
@@ -214,6 +215,7 @@
   font-weight: inherit;
 }
 
+/* Quando a digitação termina, as caixinhas de métrica ganham uma borda ciana leve */
 .dash-stat {
   transition: border-color 0.6s ease, background 0.6s ease;
 }
@@ -222,6 +224,7 @@
   border-color: rgba(0, 242, 254, 0.08);
 }
 
+/* Bolinha verde pulsando ao lado de "Active", indica que está "ao vivo" */
 .live-dot {
   flex: none;
   width: 6px;
@@ -360,6 +363,7 @@
   transform: translateX(4px);
 }
 
+/* Botão "Ver exemplo" dos cards de serviço */
 .card-example {
   position: relative;
   display: inline-flex;
@@ -377,6 +381,7 @@
   transition: var(--transition-smooth);
 }
 
+/* Brilho que atravessa o botão ao passar o mouse */
 .card-example::before {
   content: '';
   position: absolute;
@@ -416,6 +421,8 @@
   box-shadow: 0 0 0 6px var(--card-tone-soft, rgba(0, 242, 254, 0.08));
 }
 
+/* Cor de cada card, puxada do ícone dele (roxo, ciano ou verde).
+   O botão "Ver exemplo" e os cantinhos do hover usam essa cor */
 .service-card:has(.purple-bg) {
   --card-tone: var(--secondary);
   --card-tone-soft: rgba(157, 78, 221, 0.16);
@@ -431,6 +438,7 @@
   --card-tone-soft: rgba(0, 230, 118, 0.12);
 }
 
+/* Ícone do card sobe e gira um pouco ao passar o mouse */
 .service-card .card-icon-wrapper {
   transition: var(--transition-smooth);
 }
@@ -479,6 +487,7 @@
 }
 
 @media (max-width: 576px) {
+  /* Celular: o terminal do topo cresce conforme o conteúdo (antes cortava as métricas) */
   .dashboard-mockup {
     aspect-ratio: auto;
   }
@@ -517,6 +526,7 @@
     margin-top: 6px;
   }
 
+  /* Celular: botões de complexidade menores para caber na largura */
   .toggle-btn {
     padding: 10px 6px;
     font-size: 0.8rem;
@@ -545,6 +555,7 @@
   }
 }
 
+/* Quem ativou "reduzir movimento" no sistema não vê as animações que se repetem */
 @media (prefers-reduced-motion: reduce) {
   .recalc-beam,
   .phase-seg,

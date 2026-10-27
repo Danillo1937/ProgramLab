@@ -1,5 +1,5 @@
-/* Estilos do exemplo Business Intelligence — separados para respeitar o limite de CSS por arquivo do projeto. */
-/* ═══════════════════ BI ═══════════════════ */
+/* Estilos do exemplo de BI (aba Business Intelligence).
+   Separado em arquivo próprio por causa do limite de tamanho de CSS por arquivo */
 .bi-wrap { display: flex; flex-direction: column; gap: 18px; }
 
 .bi-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; }
@@ -23,6 +23,7 @@
 .seg button.active { background: rgba(0, 230, 118, 0.12); color: var(--text-main); }
 .etl-status { display: inline-flex; align-items: center; gap: 8px; font-size: 0.78rem; color: var(--text-muted); }
 
+/* Números principais do painel (receita, ticket, margem e clientes) */
 .bi-kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
 .kpi {
   padding: 18px;
@@ -61,6 +62,7 @@
 .line-chart { display: block; width: 100%; height: 260px; overflow: visible; touch-action: pan-y; }
 .grid { stroke: rgba(255, 255, 255, 0.05); stroke-width: 1; }
 .axis { fill: rgba(148, 163, 184, 0.75); font-size: 11px; font-family: var(--sc-mono); }
+/* Gráfico de linha: a curva se desenha da esquerda para a direita e a área preenche depois */
 .stroke {
   fill: none;
   stroke: #00c6ff;
@@ -83,6 +85,7 @@
 .hover-dot { fill: #00c6ff; stroke: var(--sc-surface); stroke-width: 2; }
 .hit { fill: transparent; cursor: crosshair; }
 
+/* Balão com o valor do ponto, segue o mouse no gráfico */
 .tooltip {
   position: absolute;
   top: 0;
@@ -102,6 +105,7 @@
 .tooltip span { font-family: var(--sc-mono); font-size: 0.7rem; color: var(--text-muted); }
 .tooltip b { font-size: 0.92rem; font-variant-numeric: tabular-nums; }
 
+/* Barras de receita por região */
 .hbars { list-style: none; display: flex; flex-direction: column; gap: 12px; }
 .hbars li {
   display: grid;
@@ -124,6 +128,7 @@
 .hb-val { font-size: 0.8rem; text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .hb-hint { margin-top: 14px; font-size: 0.72rem; color: var(--text-dark); }
 
+/* Gráfico de rosca dos canais de venda, com o maior canal escrito no meio */
 .donut-wrap { position: relative; width: min(190px, 100%); margin: 0 auto 16px; }
 .donut { display: block; width: 100%; transform: rotate(-90deg); }
 .donut-bg { fill: none; stroke: rgba(255, 255, 255, 0.04); stroke-width: 14; }

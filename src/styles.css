@@ -26,6 +26,7 @@
   /* Font Families */
   --font-title: 'Plus Jakarta Sans', sans-serif;
   --font-body: 'Space Grotesk', sans-serif;
+  /* Fonte de código, usada no terminal do topo e nos textos de dados */
   --font-mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
 
   /* Transitions */
@@ -50,18 +51,22 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Cor do texto selecionado com o mouse */
 ::selection {
   background: var(--primary);
   color: #04060b;
 }
 
+/* Contorno ciano em quem está navegando pelo teclado (Tab) */
 :focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: 3px;
   border-radius: 6px;
 }
 
-/* Grão de filme sutil sobre todo o site (textura editorial) */
+/* Textura de grão bem leve por cima do site inteiro, dá um acabamento de filme.
+   Otimização: fica numa camada separada (will-change) para o navegador não redesenhar a página
+   inteira a cada movimento, e no celular fica parada para economizar bateria */
 body::after {
   content: '';
   position: fixed;
@@ -70,8 +75,15 @@ body::after {
   pointer-events: none;
   opacity: 0.05;
   mix-blend-mode: overlay;
+  will-change: transform;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
   animation: grain 1s steps(6) infinite;
+}
+
+@media (max-width: 768px) {
+  body::after {
+    animation: none;
+  }
 }
 
 @keyframes grain {
@@ -113,6 +125,7 @@ p {
   background:
     linear-gradient(140deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.005) 45%),
     var(--bg-card);
+  /* Vidro: desfoca o que está atrás e realça um pouco as cores */
   backdrop-filter: blur(16px) saturate(1.4);
   -webkit-backdrop-filter: blur(16px) saturate(1.4);
   border: 1px solid var(--border-glass);
@@ -127,7 +140,8 @@ p {
   transform: translateY(-2px);
 }
 
-/* Cantoneiras técnicas que acendem no hover (cards de serviço) */
+/* Cantinhos que aparecem nos cards de serviço ao passar o mouse.
+   A cor vem do próprio card (roxo, ciano ou verde), definida no home.css */
 .corners {
   position: relative;
 }
@@ -168,7 +182,8 @@ p {
   transform: translate(0, 0);
 }
 
-/* Revelação ao rolar (aplicada pela diretiva appReveal só no navegador) */
+/* Entrada ao rolar a página: o bloco começa escondido, um pouco abaixo e desfocado, e aparece
+   quando chega na tela. Quem liga isso é o appReveal (src/app/shared/reveal.directive.ts) */
 .reveal {
   transition:
     opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1) var(--reveal-delay, 0ms),
@@ -182,7 +197,7 @@ p {
   filter: blur(10px);
 }
 
-/* Números que contam: largura fixa por dígito evita "tremer" o layout */
+/* Números animados: todos os dígitos com a mesma largura, assim o texto não fica tremendo enquanto conta */
 .count-up {
   font-variant-numeric: tabular-nums;
 }
@@ -352,6 +367,7 @@ p {
   pointer-events: none;
   z-index: 0;
 }
+/* Quem ativou "reduzir movimento" no sistema: desliga as animações que se repetem e mostra tudo direto */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

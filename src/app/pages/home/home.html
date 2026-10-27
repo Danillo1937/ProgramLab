@@ -59,7 +59,7 @@
 
     <!-- Tech Graphic/Dashboard Showcase -->
     <div class="hero-showcase animate-float">
-      <div class="dashboard-mockup glass-panel">
+      <div class="dashboard-mockup glass-panel" #mockup>
         <div class="mockup-header">
           <div class="mockup-dots">
             <span class="dot dot-red"></span>
@@ -69,6 +69,7 @@
           <span class="mockup-title">core-engine-v2.bin</span>
         </div>
         <div class="mockup-body">
+          <!-- As 3 linhas são digitadas letra por letra quando a página abre (lógica no home.ts) -->
           @for (line of consoleLines; track line.text; let i = $index) {
             <div
               class="console-line"
@@ -76,8 +77,10 @@
               [class.text-purple]="line.tone === 'purple'"
               [class.text-green]="line.tone === 'green'"
               [class.is-typing]="typingLine() === i"
-            >{{ line.text.slice(0, typed()[i]) }}</div>
+              [textContent]="line.text.slice(0, typed()[i])"
+            ></div>
           }
+          <!-- Métricas: ficam zeradas durante a digitação e depois sobem até o valor -->
           <div class="dashboard-stats" [class.is-live]="bootDone()">
             <div class="dash-stat">
               <span class="d-label">API Latency</span>
@@ -111,6 +114,7 @@
               </span>
             </div>
           </div>
+          <!-- Barras: crescem no fim da digitação e depois andam como um gráfico ao vivo -->
           <div class="dashboard-chart" aria-hidden="true">
             @for (h of bars(); track $index; let last = $last) {
               <div
@@ -148,6 +152,7 @@
           <span>Entenda o fluxo</span>
           <i class="fa-solid fa-chevron-right"></i>
         </a>
+        <!-- Botão novo: abre a janela com um exemplo animado deste serviço -->
         <button type="button" class="card-example" (click)="openShowcase('web', $event)">
           <span class="card-example-icon" aria-hidden="true"><i class="fa-solid fa-play"></i></span>
           <span>Ver exemplo</span>
@@ -212,8 +217,8 @@
                 <button
                   type="button"
                   class="pill-btn"
-                  [class.active]="isSelected(opt.id)"
-                  [attr.aria-pressed]="isSelected(opt.id)"
+                  [class.active]="selectedSet().has(opt.id)"
+                  [attr.aria-pressed]="selectedSet().has(opt.id)"
                   (click)="toggleService(opt.id)"
                 >
                   <i class="fa-solid" [class]="opt.icon"></i>
@@ -234,6 +239,7 @@
               [style.--count]="complexityLevels.length"
               [style.--index]="complexityIndex()"
             >
+              <!-- Fundo que desliza até a opção escolhida -->
               <span class="toggle-indicator" aria-hidden="true"></span>
               @for (level of complexityLevels; track level.id) {
                 <button
@@ -248,6 +254,7 @@
                 </button>
               }
             </div>
+            <!-- Barrinha que enche conforme a complexidade -->
             <div class="complexity-meter" aria-hidden="true">
               @for (seg of [0, 1, 2, 3, 4, 5]; track seg) {
                 <span [class.on]="seg < (complexityIndex() + 1) * 2"></span>
@@ -285,7 +292,7 @@
             </div>
           </div>
 
-          <!-- Timeline por etapa -->
+          <!-- Novo: mostra quantos dias vão para cada etapa da metodologia -->
           <div class="control-group">
             <span class="group-label">Linha do Tempo por Etapa</span>
             @if (estimate().empty) {
@@ -311,7 +318,8 @@
 
         <!-- Output display -->
         <div class="simulator-result">
-          <div class="result-box glass-panel" [class.is-empty]="estimate().empty">
+          <div class="result-box glass-panel">
+            <!-- Brilho que passa pelo card toda vez que algo muda -->
             <span class="recalc-beam" [appReplay]="recalcKey()" aria-hidden="true"></span>
             <div class="result-head">
               <h3 class="result-title">Estimativa Preliminar</h3>
@@ -322,6 +330,7 @@
 
             <div class="value-display">
               <span class="value-label">Valor Estimado</span>
+              <!-- O valor e o prazo agora sobem animados até o resultado -->
               <span class="value-number gradient-text-primary" [appCountUp]="estimate().price" format="brl" [duration]="2000"></span>
             </div>
 
@@ -336,6 +345,7 @@
               </span>
             </div>
 
+            <!-- Novo: quanto cada serviço escolhido representa no valor total -->
             @if (!estimate().empty) {
               <div class="breakdown">
                 <span class="value-label">Composição do Investimento</span>
@@ -366,12 +376,16 @@
     </div>
   </section>
 
-  @if (showcase(); as kind) {
-    <app-service-showcase
-      [kind]="kind"
-      [origin]="showcaseOrigin()"
-      (kindChange)="showcase.set($event)"
-      (closed)="closeShowcase()"
-    />
+  <!-- Janela "Ver exemplo". Otimização: o código dela só é baixado depois que a página termina
+       de carregar, então não deixa a abertura da home mais lenta -->
+  @defer (on idle) {
+    @if (showcase(); as kind) {
+      <app-service-showcase
+        [kind]="kind"
+        [origin]="showcaseOrigin()"
+        (kindChange)="showcase.set($event)"
+        (closed)="closeShowcase()"
+      />
+    }
   }
 </div>

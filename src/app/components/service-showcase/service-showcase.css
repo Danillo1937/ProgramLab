@@ -1,6 +1,6 @@
-/* ════════════════════════════════════════════════════════════════
-   Showcase "Ver exemplo" — painel em tela cheia que nasce do botão
-   ════════════════════════════════════════════════════════════════ */
+/* Janela "Ver exemplo" que abre pelos cards de serviço da home.
+   Aqui fica a parte comum (fundo, topo, rodapé e regras de celular).
+   O visual de cada exemplo está em showcase-web.css, showcase-automation.css e showcase-bi.css */
 :host {
   --sc-surface: #0b1220;
   --sc-surface-2: rgba(255, 255, 255, 0.025);
@@ -11,6 +11,7 @@
   --warn: #f5b33d;
 }
 
+/* Fundo escuro e desfocado atrás da janela. Clicar nele fecha */
 .sc-overlay {
   position: fixed;
   inset: 0;
@@ -28,6 +29,7 @@
   animation: sc-fade-out 0.28s ease both;
 }
 
+/* A janela em si: abre crescendo a partir do botão que foi clicado (--ox e --oy) */
 .sc-panel {
   position: relative;
   width: min(1240px, 100%);
@@ -48,6 +50,7 @@
   animation: sc-open 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+/* Cor de destaque de cada exemplo */
 .sc-panel[data-tone='cyan'] {
   --tone: var(--primary);
   --tone-soft: rgba(0, 242, 254, 0.1);
@@ -82,7 +85,7 @@
   to { opacity: 0; transform: scale(0.94); filter: blur(8px); }
 }
 
-/* ─────────────── Cabeçalho ─────────────── */
+/* Topo da janela: abas e botão de fechar */
 .sc-head {
   display: flex;
   align-items: center;
@@ -153,7 +156,7 @@
   transform: rotate(90deg);
 }
 
-/* ─────────────── Corpo ─────────────── */
+/* Área do conteúdo, com rolagem própria */
 .sc-body {
   flex: 1;
   overflow-y: auto;
@@ -252,7 +255,7 @@
   100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0); }
 }
 
-/* ─────────────── Rodapé ─────────────── */
+/* Rodapé fixo no fim da janela, com os botões de ação */
 .sc-foot {
   position: sticky;
   bottom: 0;
@@ -271,7 +274,7 @@
 .sc-foot-actions { display: flex; gap: 10px; flex: none; }
 .sc-foot-actions a { text-decoration: none; }
 
-/* ─────────────── Responsivo ─────────────── */
+/* Telas menores: as colunas viram uma só e, no celular, a janela ocupa a tela toda */
 @media (max-width: 1024px) {
   .web-grid { grid-template-columns: 1fr; }
   .web-side { display: grid; grid-template-columns: 1fr 1fr; }
